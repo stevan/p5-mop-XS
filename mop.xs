@@ -20,10 +20,10 @@ newMopOVhv();
 SV*
 newMopOVav();
 
-MODULE = mop  PACKAGE = mop::internals::slots
+MODULE = mop  PACKAGE = mop::internals::MopOV
 
 void
-get(rv, slot_name)
+get_at_slot(rv, slot_name)
     SV* rv;
     SV* slot_name;
     PPCODE:
@@ -31,7 +31,7 @@ get(rv, slot_name)
         PUSHs(MopOV_get_at_slot(rv, slot_name));
 
 void
-set(rv, slot_name, slot_value)
+set_at_slot(rv, slot_name, slot_value)
     SV* rv;
     SV* slot_name;
     SV* slot_value;
@@ -40,15 +40,13 @@ set(rv, slot_name, slot_value)
         XSRETURN(2);
 
 SV*
-has(rv, slot_name)
+has_at_slot(rv, slot_name)
     SV* rv;
     SV* slot_name;
     CODE:
         RETVAL = boolSV(MopOV_has_at_slot(rv, slot_name));
     OUTPUT:
         RETVAL
-
-MODULE = mop  PACKAGE = mop::internals::events
 
 SV*
 has_events(object)
@@ -59,7 +57,7 @@ has_events(object)
         RETVAL
 
 void
-bind(object, event_name, callback)
+bind_event(object, event_name, callback)
     SV *object
     SV *event_name
     SV *callback
@@ -68,7 +66,7 @@ bind(object, event_name, callback)
         XSRETURN(1);
 
 void
-unbind(object, event_name, callback)
+unbind_event(object, event_name, callback)
     SV *object
     SV *event_name
     SV *callback
@@ -77,7 +75,7 @@ unbind(object, event_name, callback)
         XSRETURN(1);
 
 void
-fire(object, event_name, ...)
+fire_event(object, event_name, ...)
     SV* object
     SV* event_name
     PREINIT:

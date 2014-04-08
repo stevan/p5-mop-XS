@@ -1,0 +1,9 @@
+MYMETA.*
+Makefile
+Makefile.old
+*.bs
+mop.c
+*.o
+blib/
+pm_to_blib
+__NOTES__.txt

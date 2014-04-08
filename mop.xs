@@ -7,9 +7,12 @@
 
 MODULE = mop  PACKAGE = mop::internals
 
-void
+SV*
 newMopOV(rv)
     SV* rv;
+    CODE:
+        (void)newMopOV(rv);
+        XSRETURN(0);
 
 SV*
 newMopOVsv();

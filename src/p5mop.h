@@ -18,14 +18,11 @@ typedef struct {
 // constructor
 
 #define newMopOV(rv) THX_newMopOV(aTHX_ rv)
-#define newMopOVsv() THX_newMopOVsv(aTHX)
-#define newMopOVhv() THX_newMopOVhv(aTHX)
-#define newMopOVav() THX_newMopOVav(aTHX)
+#define newMopOVsv() THX_newMopOV(aTHX_ newRV_noinc(newSV(0)))
+#define newMopOVhv() THX_newMopOV(aTHX_ newRV_noinc((SV*) newHV()))
+#define newMopOVav() THX_newMopOV(aTHX_ newRV_noinc((SV*) newAV()))
 
-void THX_newMopOV(pTHX_ SV* rv);
-SV*  THX_newMopOVsv(pTHX);
-SV*  THX_newMopOVhv(pTHX);
-SV*  THX_newMopOVav(pTHX);
+SV* THX_newMopOV(pTHX_ SV* rv);
 
 // destructor
 

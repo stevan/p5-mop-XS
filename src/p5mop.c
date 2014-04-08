@@ -68,7 +68,7 @@ static MGVTBL MopOV_vtbl = {
  * Constructors
  * ***************************************************** */
 
-void THX_newMopOV(pTHX_ SV* rv) {
+SV* THX_newMopOV(pTHX_ SV* rv) {
     assert(rv != NULL);
 
     if (SvTYPE(rv) != SVt_RV) {
@@ -84,21 +84,8 @@ void THX_newMopOV(pTHX_ SV* rv) {
     opaque->class     = newSV(0);
 
     sv_magicext(SvRV(rv), NULL, PERL_MAGIC_ext, &MopOV_vtbl, (char*) opaque, 0);
-}
 
-SV* THX_newMopOVsv(pTHX) {
-    SV* rv = newRV_noinc(newSV(0));
-    return newMopOV(rv);
-}
-
-SV* THX_newMopOVhv(pTHX) {
-    SV* rv = newRV_noinc((SV*) newHV());
-    return newMopOV(rv);
-}
-
-SV* THX_newMopOVav(pTHX) {
-    SV* rv = newRV_noinc((SV*) newAV());
-    return newMopOV(rv);
+    return rv;
 }
 
 /* *****************************************************

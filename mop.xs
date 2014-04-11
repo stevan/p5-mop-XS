@@ -3,16 +3,35 @@
 #define NO_XSLOCKS
 #include "XSUB.h"
 
-#include "src/p5mop.h"
+#include "p5mop.h"
+#include "p5mop.c"
+
+#include "p5mop_class.h"
+#include "p5mop_class.c"
+
 
 MODULE = mop  PACKAGE = mop::internals
 
-SV*
+SV* 
+newMopMCV(name, ...)
+    SV* name; 
+    CODE:  
+        HV* parent;
+        if (items > 1) {
+            parent = gv_stashsv(ST(1), GV_ADD);
+        } else {
+            parent = gv_stashpvn("main", 4, GV_ADD);
+        }        
+        RETVAL = newMopMCV(name, parent);
+    OUTPUT:
+        RETVAL
+
+void
 newMopOV(rv)
     SV* rv;
-    CODE:
+    PPCODE:
         (void)newMopOV(rv);
-        XSRETURN(0);
+        XSRETURN(1);
 
 SV*
 newMopOVsv();
@@ -61,26 +80,26 @@ has_events(object)
 
 void
 bind_event(object, event_name, callback)
-    SV *object
-    SV *event_name
-    SV *callback
+    SV *object;
+    SV *event_name;
+    SV *callback;
     CODE:
         MopOV_bind_event(object, event_name, callback);
         XSRETURN(1);
 
 void
 unbind_event(object, event_name, callback)
-    SV *object
-    SV *event_name
-    SV *callback
+    SV *object;
+    SV *event_name;
+    SV *callback;
     CODE:
         MopOV_unbind_event(object, event_name, callback);
         XSRETURN(1);
 
 void
 fire_event(object, event_name, ...)
-    SV* object
-    SV* event_name
+    SV* object;
+    SV* event_name;
     PREINIT:
         I32 j;
         SV** args;
@@ -93,6 +112,14 @@ fire_event(object, event_name, ...)
         Safefree(args);
         XSRETURN(1);
 
+MODULE = mop  PACKAGE = mop::internals::MopMCV
 
+SV*
+name(metaclass)
+    SV* metaclass;
+    CODE:
+        RETVAL = MopMCV_get_name(metaclass);
+    OUTPUT:
+        RETVAL
 
 

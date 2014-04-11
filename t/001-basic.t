@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-use v5.19;
+use v5.18;
 use warnings;
 
 use Test::More;

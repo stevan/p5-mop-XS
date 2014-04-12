@@ -119,3 +119,10 @@ version(metaclass)
         EXTEND(SP, 1);
         PUSHs(MopMCV_get_version(metaclass));
 
+void
+authority(metaclass)
+    SV* metaclass;
+    PPCODE:
+        EXTEND(SP, 1);
+        PUSHs(MopMCV_get_authority(metaclass));
+

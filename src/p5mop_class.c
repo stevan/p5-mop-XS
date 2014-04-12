@@ -30,11 +30,17 @@ SV* THX_MopMCV_get_version(pTHX_ SV* metaclass) {
 	}
 }
 
-/*
-SV* THX_MopMCV_get_authority(pTHX_ SV* metaclass) {
 
+SV* THX_MopMCV_get_authority(pTHX_ SV* metaclass) {
+	HV* stash = (HV*) SvRV(metaclass);
+
+	SV** authority = hv_fetch(stash, "AUTHORITY", 9, 0);
+	if (authority != NULL) {
+		return GvSV((GV*) *authority);
+	} else {
+		return &PL_sv_undef;
+	}
 }
-*/
 
 /* *****************************************************
  * Internal Util functions ...

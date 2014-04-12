@@ -1,11 +1,11 @@
 #include "p5mop.h"
-#include "p5mop_class.h"
+#include "p5mop_klass.h"
 
 /* *****************************************************
  * Constructors
  * ***************************************************** */
 
-SV* THX_newMopMCV(pTHX_ SV* name) {
+SV* THX_newMopMKV(pTHX_ SV* name) {
     return newMopOV(newRV_noinc((SV*) gv_stashsv(name, GV_ADD)));
 }
 
@@ -14,12 +14,12 @@ SV* THX_newMopMCV(pTHX_ SV* name) {
  * ***************************************************** */
 
 
-SV* THX_MopMCV_get_name(pTHX_ SV* metaclass) {
+SV* THX_MopMKV_get_name(pTHX_ SV* metaclass) {
 	return newSVpv(HvNAME(SvRV(metaclass)), 0);
 }
 
 
-SV* THX_MopMCV_get_version(pTHX_ SV* metaclass) {
+SV* THX_MopMKV_get_version(pTHX_ SV* metaclass) {
 	HV* stash = (HV*) SvRV(metaclass);
 
 	SV** version = hv_fetch(stash, "VERSION", 7, 0);
@@ -31,7 +31,7 @@ SV* THX_MopMCV_get_version(pTHX_ SV* metaclass) {
 }
 
 
-SV* THX_MopMCV_get_authority(pTHX_ SV* metaclass) {
+SV* THX_MopMKV_get_authority(pTHX_ SV* metaclass) {
 	HV* stash = (HV*) SvRV(metaclass);
 
 	SV** authority = hv_fetch(stash, "AUTHORITY", 9, 0);

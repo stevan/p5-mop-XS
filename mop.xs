@@ -13,18 +13,8 @@
 MODULE = mop  PACKAGE = mop::internals
 
 SV* 
-newMopMCV(name, ...)
+newMopMCV(name)
     SV* name; 
-    CODE:  
-        HV* parent;
-        if (items > 1) {
-            parent = gv_stashsv(ST(1), GV_ADD);
-        } else {
-            parent = gv_stashpvn("main", 4, GV_ADD);
-        }        
-        RETVAL = newMopMCV(name, parent);
-    OUTPUT:
-        RETVAL
 
 void
 newMopOV(rv)
@@ -122,4 +112,10 @@ name(metaclass)
     OUTPUT:
         RETVAL
 
+void
+version(metaclass)
+    SV* metaclass;
+    PPCODE:
+        EXTEND(SP, 1);
+        PUSHs(MopMCV_get_version(metaclass));
 

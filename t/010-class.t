@@ -12,13 +12,14 @@ BEGIN {
     use_ok('mop')
 };
 
-package Foo::Bar::Baz {
+package Foo::Bar::Baz 0.01 {
 	sub test {}
 }
 
 my $mcv = mop::internals::newMopMCV("Foo::Bar::Baz");
 
 is(mop::internals::MopMCV::name($mcv), 'Foo::Bar::Baz', '... got the right name');
+is(mop::internals::MopMCV::version($mcv), '0.01', '... got the right version');
 
 
 done_testing;

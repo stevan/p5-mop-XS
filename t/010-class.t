@@ -33,9 +33,35 @@ package Foo::Bar {
 {
 	my $mcv = mop::internals::newMopMCV("Foo::Bar");
 
+	mop::internals::MopOV::set_at_slot($mcv, "$!test", 10);
+
+	is(mop::internals::MopOV::get_at_slot($mcv, "$!test"), 10, '... got the value stored in magic');
+
 	is(mop::internals::MopMCV::name($mcv), 'Foo::Bar', '... got the right name');
 	is(mop::internals::MopMCV::version($mcv), '0.02', '... got the right version');
 	is(mop::internals::MopMCV::authority($mcv), 'cpan:STEVAN', '... got the right authority');
 }
+
+# works on as yet to be created packages ...
+{
+	my $mcv = mop::internals::newMopMCV("Foo::Baz");
+
+	is(mop::internals::MopMCV::name($mcv), 'Foo::Baz', '... got the right name');
+	is(mop::internals::MopMCV::version($mcv), undef, '... got the right version');
+	is(mop::internals::MopMCV::authority($mcv), undef, '... got the right authority');
+}
+
+# and the magic persists 
+{
+	no strict 'refs';
+	my $mcv = \%{"Foo::Bar::"};
+
+	is(mop::internals::MopOV::get_at_slot($mcv, "$!test"), 10, '... got the (persisted) value stored in magic');
+
+	is(mop::internals::MopMCV::name($mcv), 'Foo::Bar', '... got the right name');
+	is(mop::internals::MopMCV::version($mcv), '0.02', '... got the right version');
+	is(mop::internals::MopMCV::authority($mcv), 'cpan:STEVAN', '... got the right authority');
+}
+
 
 done_testing;

@@ -6,14 +6,14 @@
 #include "p5mop.h"
 #include "p5mop.c"
 
-#include "p5mop_klass.h"
-#include "p5mop_klass.c"
+#include "p5mop_class.h"
+#include "p5mop_class.c"
 
 
 MODULE = mop  PACKAGE = mop::internals
 
 SV* 
-newMopMKV(name)
+newMopMcV(name)
     SV* name; 
 
 void
@@ -102,13 +102,13 @@ fire_event(object, event_name, ...)
         Safefree(args);
         XSRETURN(1);
 
-MODULE = mop  PACKAGE = mop::internals::MopMKV
+MODULE = mop  PACKAGE = mop::internals::MopMcV
 
 SV*
 name(metaclass)
     SV* metaclass;
     CODE:
-        RETVAL = MopMKV_get_name(metaclass);
+        RETVAL = MopMcV_get_name(metaclass);
     OUTPUT:
         RETVAL
 
@@ -117,12 +117,12 @@ version(metaclass)
     SV* metaclass;
     PPCODE:
         EXTEND(SP, 1);
-        PUSHs(MopMKV_get_version(metaclass));
+        PUSHs(MopMcV_get_version(metaclass));
 
 void
 authority(metaclass)
     SV* metaclass;
     PPCODE:
         EXTEND(SP, 1);
-        PUSHs(MopMKV_get_authority(metaclass));
+        PUSHs(MopMcV_get_authority(metaclass));
 

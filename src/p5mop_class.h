@@ -28,4 +28,12 @@ SV* THX_MopMcV_get_name(pTHX_ SV* metaclass);
 SV* THX_MopMcV_get_version(pTHX_ SV* metaclass);
 SV* THX_MopMcV_get_authority(pTHX_ SV* metaclass);
 
+/* *****************************************************
+ * Methods
+ * ***************************************************** */
+
+#define MopMcV_construct_instance(metaclass, repr) THX_MopMcV_construct_instance(aTHX_ metaclass, repr)
+
+SV* THX_MopMcV_construct_instance(pTHX_ SV* metaclass, SV* repr);
+
 #endif /* MOP_CLASS_H */

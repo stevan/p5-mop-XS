@@ -126,3 +126,12 @@ authority(metaclass)
         EXTEND(SP, 1);
         PUSHs(MopMcV_get_authority(metaclass));
 
+void
+construct_instance(metaclass, repr)
+    SV* metaclass;
+    SV* repr;
+    PPCODE:
+        EXTEND(SP, 1);
+        PUSHs(MopMcV_construct_instance(metaclass, repr));
+
+

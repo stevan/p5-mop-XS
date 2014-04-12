@@ -13,7 +13,7 @@ BEGIN {
 };
 
 package Foo::Bar::Baz 0.01 {
-	sub test {}
+	sub test { __PACKAGE__ . '::test' }
 }
 
 {
@@ -22,12 +22,19 @@ package Foo::Bar::Baz 0.01 {
 	is(mop::internals::MopMcV::name($mcv), 'Foo::Bar::Baz', '... got the right name');
 	is(mop::internals::MopMcV::version($mcv), '0.01', '... got the right version');
 	is(mop::internals::MopMcV::authority($mcv), undef, '... got the right authority');
+
+	my $baz = mop::internals::MopMcV::construct_instance($mcv, \(my $x));
+
+	isa_ok($baz, 'Foo::Bar::Baz');
+	can_ok($baz, 'test');
+
+	is($baz->test, 'Foo::Bar::Baz::test', '... got the right value');
 }
 
 package Foo::Bar {
 	our $VERSION   = '0.02';
 	our $AUTHORITY = 'cpan:STEVAN';
-	sub test {}
+	sub test { __PACKAGE__ . '::test' }
 }
 
 {
@@ -40,6 +47,13 @@ package Foo::Bar {
 	is(mop::internals::MopMcV::name($mcv), 'Foo::Bar', '... got the right name');
 	is(mop::internals::MopMcV::version($mcv), '0.02', '... got the right version');
 	is(mop::internals::MopMcV::authority($mcv), 'cpan:STEVAN', '... got the right authority');
+
+	my $bar = mop::internals::MopMcV::construct_instance($mcv, \(my $x));
+
+	isa_ok($bar, 'Foo::Bar');
+	can_ok($bar, 'test');
+
+	is($bar->test, 'Foo::Bar::test', '... got the right value');
 }
 
 # works on as yet to be created packages ...
@@ -62,6 +76,5 @@ package Foo::Bar {
 	is(mop::internals::MopMcV::version($mcv), '0.02', '... got the right version');
 	is(mop::internals::MopMcV::authority($mcv), 'cpan:STEVAN', '... got the right authority');
 }
-
 
 done_testing;

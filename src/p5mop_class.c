@@ -43,6 +43,14 @@ SV* THX_MopMcV_get_authority(pTHX_ SV* metaclass) {
 }
 
 /* *****************************************************
+ * Methods
+ * ***************************************************** */
+
+SV* THX_MopMcV_construct_instance(pTHX_ SV* metaclass, SV* repr) {
+	return sv_bless(repr, (HV*) SvRV(metaclass));
+}
+
+/* *****************************************************
  * Internal Util functions ...
  * ***************************************************** */
 

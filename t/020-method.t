@@ -15,9 +15,7 @@ package Foo::Bar 0.01 {
 	sub baz { "baz" }
 }
 
-my $method = \&Foo::Bar::baz;
-
-my $m = mop::internals::newMopMmV($method);
+my $m = mop::internals::newMopMmV(\&Foo::Bar::baz);
 
 is(mop::internals::MopMmV::name($m), 'baz', '... got the right name');
 

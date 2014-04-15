@@ -6,7 +6,6 @@ use warnings;
 use Test::More;
 use Data::Dumper qw[ Dumper ];
 use Devel::Peek;
-use B qw[ svref_2object ];
 
 BEGIN {
     use_ok('mop')

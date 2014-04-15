@@ -6,15 +6,24 @@
 #include "p5mop.h"
 #include "p5mop.c"
 
+#include "p5mop_method.h"
+#include "p5mop_method.c"
+
 #include "p5mop_class.h"
 #include "p5mop_class.c"
-
 
 MODULE = mop  PACKAGE = mop::internals
 
 SV* 
 newMopMcV(name)
     SV* name; 
+
+void
+newMopMmV(code)
+    SV* code; 
+    PPCODE:
+        (void)newMopMmV(code);
+        XSRETURN(1);
 
 void
 newMopOV(rv)
@@ -133,5 +142,23 @@ construct_instance(metaclass, repr)
     PPCODE:
         EXTEND(SP, 1);
         PUSHs(MopMcV_construct_instance(metaclass, repr));
+
+MODULE = mop  PACKAGE = mop::internals::MopMmV
+
+SV*
+name(metamethod)
+    SV* metamethod;
+    CODE:
+        RETVAL = MopMmV_get_name(metamethod);
+    OUTPUT:
+        RETVAL
+
+void
+associated_class(metamethod)
+    SV* metamethod;
+    PPCODE:
+        EXTEND(SP, 1);
+        PUSHs(MopMmV_get_associated_class(metamethod));
+
 
 

@@ -11,34 +11,43 @@ BEGIN {
     use_ok('mop')
 };
 
-package Foo::Bar::Baz {}
+package Foo {
+	sub test_foo { "FOO" }
+}
 
-#our $O = \%Foo::Bar::Baz::;
+# uncomment this line and no more OOM error
+#our $O = \%Foo::;
 
 {
-	#Dump($O);
-	my $mcv = mop::internals::newMopMcV("Foo::Bar::Baz");
-	#Dump($mcv);
+	my $mcv = mop::internals::newMopMcV("Foo");
 }
 
 package Foo::Bar {
-	#::Dump($::O);
-	our @ISA = ('Foo::Bar::Baz');
-	#::Dump($::O);
+	our @ISA = ('Foo');
+	sub test_bar { "FOOBAR" }
 }
-
 
 {
 	my $mcv = mop::internals::newMopMcV("Foo::Bar");
 
-	is(mop::internals::MopMcV::superclass($mcv), 'Foo::Bar::Baz', '... got the right superclass');
+	is(mop::internals::MopMcV::superclass($mcv), 'Foo', '... got the right superclass');
 
 	my $bar = mop::internals::MopMcV::construct_instance($mcv, \(my $x));
 
 	isa_ok($bar, 'Foo::Bar');
-	can_ok($bar, 'test');
+	isa_ok($bar, 'Foo');
 
-	is($bar->test, 'Foo::Bar::test', '... got the right value');
+	can_ok($bar, 'test_bar');
+	can_ok($bar, 'test_foo');
+
+	ok($bar->isa('Foo::Bar'), '... $bar isa Foo::Bar');
+	ok($bar->isa('Foo'), '... $bar isa Foo');
+
+	ok($bar->can('test_foo'), '... $bar can call method test_foo');
+	ok($bar->can('test_bar'), '... $bar can call method test_bar');
+
+	is($bar->test_foo, 'FOO', '... got the right value for foo');
+	is($bar->test_bar, 'FOOBAR', '... got the right value for foobar');
 }
 
 

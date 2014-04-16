@@ -51,13 +51,13 @@ SV* THX_MopMcV_get_superclass(pTHX_ SV* metaclass) {
 	if (isa_gv != NULL) {
 		AV* isa_av = GvAV((GV*) *isa_gv);
 		if (isa_av != NULL) {
-			SV** isa = av_fetch(isa_av, 0, 0);
-			if (isa != NULL) {
-				return *isa;
+			SV** super = av_fetch(isa_av, 0, 0);
+			if (super != NULL) {
+				return newMopMcV(*super);
 			}
 		}
 	}
-	return &PL_sv_undef;
+	return NULL;
 }
 
 void THX_MopMcV_set_superclass(pTHX_ SV* metaclass, SV* superclass) {

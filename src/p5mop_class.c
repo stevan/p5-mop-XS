@@ -6,7 +6,7 @@
  * ***************************************************** */
 
 SV* THX_newMopMcV(pTHX_ SV* name) {
-    return newMopOV(newRV_noinc((SV*) gv_stashsv(name, GV_ADD)));
+    return newMopOV(newRV_inc((SV*) gv_stashsv(name, GV_ADD)));
 }
 
 /* *****************************************************
@@ -56,7 +56,7 @@ SV* THX_MopMcV_get_superclass(pTHX_ SV* metaclass) {
 				return *isa;
 			}
 		}
-	} 
+	}
 	return &PL_sv_undef;
 }
 

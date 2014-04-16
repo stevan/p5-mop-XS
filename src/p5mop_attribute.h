@@ -4,10 +4,6 @@
 #ifndef MOP_ATTR_H
 #define MOP_ATTR_H
 
-#ifndef MOP_H
-#include "p5mop.h"
-#endif
-
 /* *****************************************************
  * Constructors
  * ***************************************************** */

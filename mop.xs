@@ -6,6 +6,9 @@
 #include "p5mop.h"
 #include "p5mop.c"
 
+#include "p5mop_opaque.h"
+#include "p5mop_opaque.c"
+
 #include "p5mop_method.h"
 #include "p5mop_method.c"
 

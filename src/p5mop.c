@@ -31,6 +31,10 @@ SV* THX_newMopOV(pTHX_ SV* rv) {
         croak("rv is not a reference");
     }
 
+    if (isSVrv_a_MopOV(rv)) {
+        return rv;
+    }
+
     MopOV* opaque;
 
     Newx(opaque, 1, MopOV);
@@ -222,6 +226,25 @@ void THX_MopOV_fire_event(pTHX_ SV* rv, SV* event_name, SV** args, I32 args_len)
 /* *****************************************************
  * Util functions ...
  * ***************************************************** */
+
+bool isSVrv_a_MopOV(SV* rv) {
+    assert(rv != NULL);
+
+    if (SvTYPE(rv) != SVt_RV && SvTYPE(SvRV(rv)) != SVt_PVMG) {
+        croak("rv is not a magic reference");
+    }
+
+    if (SvMAGICAL(SvRV(rv))) {
+        MAGIC* mg;
+        for (mg = SvMAGIC(SvRV(rv)); mg; mg = mg->mg_moremagic) {
+            if ((mg->mg_type == PERL_MAGIC_ext) && (mg->mg_virtual == &MopOV_vtbl)) {
+                return mg->mg_ptr != NULL ? true : false;
+            }
+        }
+    }
+
+    return false;
+}
 
 MopOV* SVrv_to_MopOV(SV* rv) {
     assert(rv != NULL);

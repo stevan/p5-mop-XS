@@ -68,5 +68,6 @@ void THX_MopOV_fire_event(pTHX_ SV* rv, SV* event_name, SV** args, I32 args_len)
  * ***************************************************** */
 
 MopOV* SVrv_to_MopOV(SV* rv);
+bool   isSVrv_a_MopOV(SV* rv);
 
 #endif /* MOP_H */

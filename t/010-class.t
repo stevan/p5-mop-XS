@@ -72,12 +72,30 @@ package Foo::Bar {
 	is(mop::internals::MopMcV::name($mcv), 'Foo::Baz', '... got the right name');
 	is(mop::internals::MopMcV::version($mcv), undef, '... got the right version');
 	is(mop::internals::MopMcV::authority($mcv), undef, '... got the right authority');
+
+	mop::internals::MopMcV::set_superclass($mcv, \%Foo::Bar::);
+
+	my $super = mop::internals::MopMcV::superclass($mcv);
+	is(ref($super), 'HASH', '... this is the glob ref we expected');
+
+	is(mop::internals::MopMcV::name($super), 'Foo::Bar', '... got the right superclass');
+	is(mop::internals::MopMcV::version($super), '0.02', '... got the right version');
+	is(mop::internals::MopMcV::authority($super), 'cpan:STEVAN', '... got the right authority');
+
+
+	my $baz = mop::internals::MopMcV::construct_instance($mcv, \(my $x));
+
+	isa_ok($baz, 'Foo::Baz');
+	isa_ok($baz, 'Foo::Bar');
+	isa_ok($baz, 'Foo::Bar::Baz');
+	can_ok($baz, 'test');
+
+	is($baz->test, 'Foo::Bar::test', '... got the right value');
 }
 
-# and the magic persists 
+# and the magic persists
 {
-	no strict 'refs';
-	my $mcv = \%{"Foo::Bar::"};
+	my $mcv = \%Foo::Bar::;
 
 	is(mop::internals::MopOV::get_at_slot($mcv, "$!test"), 10, '... got the (persisted) value stored in magic');
 

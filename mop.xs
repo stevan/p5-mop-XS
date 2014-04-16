@@ -17,20 +17,20 @@
 
 MODULE = mop  PACKAGE = mop::internals
 
-SV* 
+SV*
 newMopMcV(name)
-    SV* name; 
+    SV* name;
 
 void
 newMopMmV(code)
-    SV* code; 
+    SV* code;
     PPCODE:
         (void)newMopMmV(code);
         XSRETURN(1);
 
-SV* 
+SV*
 newMopMaV(name)
-    SV* name; 
+    SV* name;
 
 void
 newMopOV(rv)
@@ -149,6 +149,13 @@ superclass(metaclass)
         RETVAL = MopMcV_get_superclass(metaclass);
     OUTPUT:
         RETVAL
+
+void
+set_superclass(metaclass, superclass)
+    SV* metaclass;
+    SV* superclass;
+    PPCODE:
+        MopMcV_set_superclass(metaclass, superclass);
 
 void
 construct_instance(metaclass, repr)

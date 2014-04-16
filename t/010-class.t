@@ -32,12 +32,10 @@ package Foo::Bar::Baz 0.01 {
 	is($baz->test, 'Foo::Bar::Baz::test', '... got the right value');
 }
 
-package Foo {}
-
 package Foo::Bar {
 	our $VERSION   = '0.02';
 	our $AUTHORITY = 'cpan:STEVAN';
-	our @ISA = ('Foo');
+	our @ISA = ('Foo::Bar::Baz');
 	sub test { __PACKAGE__ . '::test' }
 }
 
@@ -52,11 +50,16 @@ package Foo::Bar {
 	is(mop::internals::MopMcV::version($mcv), '0.02', '... got the right version');
 	is(mop::internals::MopMcV::authority($mcv), 'cpan:STEVAN', '... got the right authority');
 
-	is(mop::internals::MopMcV::superclass($mcv), 'Foo', '... got the right superclass');
+	my $super = mop::internals::MopMcV::superclass($mcv);
+	is(ref($super), 'HASH', '... this is the glob ref we expected');
+
+	is(mop::internals::MopMcV::name($super), 'Foo::Bar::Baz', '... got the right superclass');
+	is(mop::internals::MopMcV::version($super), '0.01', '... got the right version');
 
 	my $bar = mop::internals::MopMcV::construct_instance($mcv, \(my $x));
 
 	isa_ok($bar, 'Foo::Bar');
+	isa_ok($bar, 'Foo::Bar::Baz');
 	can_ok($bar, 'test');
 
 	is($bar->test, 'Foo::Bar::test', '... got the right value');

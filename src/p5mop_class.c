@@ -72,7 +72,7 @@ void THX_MopMcV_set_superclass(pTHX_ SV* metaclass, SV* superclass) {
 	} else {
 		isa_gv = (GV*) newSV(0);
 		gv_init_pvn(isa_gv, stash, "ISA", 3, 0);
-		hv_store(stash, "ISA", 7, (SV*) isa_gv, 0);
+		(void)hv_store(stash, "ISA", 3, (SV*) isa_gv, 0);
 	}
 
 	isa_av = GvAV(isa_gv);

@@ -9,6 +9,9 @@
 #include "p5mop_method.h"
 #include "p5mop_method.c"
 
+#include "p5mop_attribute.h"
+#include "p5mop_attribute.c"
+
 #include "p5mop_class.h"
 #include "p5mop_class.c"
 
@@ -24,6 +27,10 @@ newMopMmV(code)
     PPCODE:
         (void)newMopMmV(code);
         XSRETURN(1);
+
+SV* 
+newMopMaV(name)
+    SV* name; 
 
 void
 newMopOV(rv)
@@ -135,6 +142,14 @@ authority(metaclass)
         EXTEND(SP, 1);
         PUSHs(MopMcV_get_authority(metaclass));
 
+SV*
+superclass(metaclass)
+    SV* metaclass;
+    CODE:
+        RETVAL = MopMcV_get_superclass(metaclass);
+    OUTPUT:
+        RETVAL
+
 void
 construct_instance(metaclass, repr)
     SV* metaclass;
@@ -160,5 +175,13 @@ associated_class(metamethod)
         EXTEND(SP, 1);
         PUSHs(MopMmV_get_associated_class(metamethod));
 
+MODULE = mop  PACKAGE = mop::internals::MopMaV
 
+SV*
+name(meta_attr)
+    SV* meta_attr;
+    CODE:
+        RETVAL = MopMaV_get_name(meta_attr);
+    OUTPUT:
+        RETVAL
 

@@ -248,6 +248,13 @@ MopOV* SVrv_to_MopOV(SV* rv) {
 
 // magic destructor ...
 static int mg_freeMopOV(pTHX_ SV *sv, MAGIC *mg) {
+
+    // XXX:
+    // guard against global destruction
+    // in here (not exactly sure how, but
+    // Vincent suggested it).
+    // - SL
+
     if (SvREFCNT(sv) == 0) {
         freeMopOV((MopOV*) mg->mg_ptr);
         mg->mg_ptr = NULL;

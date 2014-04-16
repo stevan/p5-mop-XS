@@ -42,6 +42,48 @@ SV* THX_MopMcV_get_authority(pTHX_ SV* metaclass) {
 	}
 }
 
+// superclass
+
+SV* THX_MopMcV_get_superclass(pTHX_ SV* metaclass) {
+	HV* stash = (HV*) SvRV(metaclass);
+
+	SV** isa_gv = hv_fetch(stash, "ISA", 3, 0);
+	if (isa_gv != NULL) {
+		AV* isa_av = GvAV((GV*) *isa_gv);
+		if (isa_av != NULL) {
+			SV** isa = av_fetch(isa_av, 0, 0);
+			if (isa != NULL) {
+				return *isa;
+			}
+		}
+	} 
+	return &PL_sv_undef;
+}
+
+void THX_MopMcV_set_superclass(pTHX_ SV* metaclass, SV* superclass) {
+	AV* isa_av;
+	GV* isa_gv;
+	HV* stash = (HV*) SvRV(metaclass);
+
+	SV** isa_gv_p = hv_fetch(stash, "ISA", 3, 0);
+
+	if (isa_gv_p != NULL) {
+		isa_gv = (GV*) *isa_gv_p;
+	} else {
+		isa_gv = (GV*) newSV(0);
+		gv_init_pvn(isa_gv, stash, "ISA", 3, 0);
+		hv_store(stash, "ISA", 7, (SV*) isa_gv, 0);
+	}
+
+	isa_av = GvAV(isa_gv);
+	if (isa_av == NULL) {
+		gv_AVadd(isa_gv);
+		isa_av = GvAV(isa_gv);
+	}
+
+	(void)av_store(isa_av, 0, MopMcV_get_name(superclass));
+}
+
 /* *****************************************************
  * Methods
  * ***************************************************** */

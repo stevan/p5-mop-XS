@@ -22,6 +22,8 @@ package Foo::Bar::Baz 0.01 {
 	is(mop::internals::MopMcV::version($mcv), '0.01', '... got the right version');
 	is(mop::internals::MopMcV::authority($mcv), undef, '... got the right authority');
 
+	is(mop::internals::MopMcV::superclass($mcv), undef, '... got the right superclass');
+
 	my $baz = mop::internals::MopMcV::construct_instance($mcv, \(my $x));
 
 	isa_ok($baz, 'Foo::Bar::Baz');
@@ -30,9 +32,12 @@ package Foo::Bar::Baz 0.01 {
 	is($baz->test, 'Foo::Bar::Baz::test', '... got the right value');
 }
 
+package Foo {}
+
 package Foo::Bar {
 	our $VERSION   = '0.02';
 	our $AUTHORITY = 'cpan:STEVAN';
+	our @ISA = ('Foo');
 	sub test { __PACKAGE__ . '::test' }
 }
 
@@ -46,6 +51,8 @@ package Foo::Bar {
 	is(mop::internals::MopMcV::name($mcv), 'Foo::Bar', '... got the right name');
 	is(mop::internals::MopMcV::version($mcv), '0.02', '... got the right version');
 	is(mop::internals::MopMcV::authority($mcv), 'cpan:STEVAN', '... got the right authority');
+
+	is(mop::internals::MopMcV::superclass($mcv), 'Foo', '... got the right superclass');
 
 	my $bar = mop::internals::MopMcV::construct_instance($mcv, \(my $x));
 

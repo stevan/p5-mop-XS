@@ -28,6 +28,14 @@ SV* THX_MopMcV_get_name(pTHX_ SV* metaclass);
 SV* THX_MopMcV_get_version(pTHX_ SV* metaclass);
 SV* THX_MopMcV_get_authority(pTHX_ SV* metaclass);
 
+// superclass
+
+#define MopMcV_get_superclass(metaclass) THX_MopMcV_get_superclass(aTHX_ metaclass)
+#define MopMcV_set_superclass(metaclass, superclass) THX_MopMcV_set_superclass(aTHX_ metaclass, superclass)
+
+SV*  THX_MopMcV_get_superclass(pTHX_ SV* metaclass);
+void THX_MopMcV_set_superclass(pTHX_ SV* metaclass, SV* superclass);
+
 /* *****************************************************
  * Methods
  * ***************************************************** */

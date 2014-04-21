@@ -26,7 +26,7 @@ SV* THX_MopMcV_get_version(pTHX_ SV* metaclass) {
 	if (version != NULL) {
 		return GvSV((GV*) *version);
 	} else {
-		return &PL_sv_undef;
+		return NULL;
 	}
 }
 
@@ -38,7 +38,7 @@ SV* THX_MopMcV_get_authority(pTHX_ SV* metaclass) {
 	if (authority != NULL) {
 		return GvSV((GV*) *authority);
 	} else {
-		return &PL_sv_undef;
+		return NULL;
 	}
 }
 

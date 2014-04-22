@@ -160,6 +160,24 @@ set_superclass(metaclass, superclass)
     PPCODE:
         MopMcV_set_superclass(metaclass, superclass);
 
+SV*
+has_method(metaclass, name)
+    SV* metaclass;
+    SV* name;
+    CODE:
+        RETVAL = boolSV(MopMcV_has_method(metaclass, name));
+    OUTPUT:
+        RETVAL
+
+SV*
+get_method(metaclass, name)
+    SV* metaclass;
+    SV* name;
+    CODE:
+        RETVAL = MopMcV_get_method(metaclass, name);
+    OUTPUT:
+        RETVAL
+
 void
 construct_instance(metaclass, repr)
     SV* metaclass;

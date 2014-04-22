@@ -84,6 +84,38 @@ void THX_MopMcV_set_superclass(pTHX_ SV* metaclass, SV* superclass) {
 	(void)av_store(isa_av, 0, MopMcV_get_name(superclass));
 }
 
+// methods
+
+bool THX_MopMcV_has_method(pTHX_ SV* metaclass, SV* name) {
+	HV* stash  = (HV*) SvRV(metaclass);
+
+	HE* method_gv_he = hv_fetch_ent(stash, name, 0, 0);
+	if (method_gv_he != NULL) {
+		GV* method_gv = (GV*) HeVAL(method_gv_he);
+		CV* method    = GvCV(method_gv);
+		if (method != NULL && GvSTASH(CvGV(method)) == stash) {
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+SV* THX_MopMcV_get_method(pTHX_ SV* metaclass, SV* name) {
+	HV* stash  = (HV*) SvRV(metaclass);
+
+	HE* method_gv_he = hv_fetch_ent(stash, name, 0, 0);
+	if (method_gv_he != NULL) {
+		GV* method_gv = (GV*) HeVAL(method_gv_he);
+		CV* method    = GvCV(method_gv);
+		if (method != NULL && GvSTASH(CvGV(method)) == stash) {
+			return newMopMmV(newRV_inc((SV*) method));	
+		}
+	}
+	
+	return NULL;
+}
+
 /* *****************************************************
  * Methods
  * ***************************************************** */

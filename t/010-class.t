@@ -24,6 +24,18 @@ package Foo::Bar::Baz 0.01 {
 
 	is(mop::internals::MopMcV::superclass($mcv), undef, '... got the right superclass');
 
+	ok(mop::internals::MopMcV::has_method($mcv, 'test'), '... we have the &test method');
+	ok(!mop::internals::MopMcV::has_method($mcv, 'fail'), '... we do not have the &fail method');
+
+	{
+		my $test = mop::internals::MopMcV::get_method($mcv, 'test');
+		is(ref($test), 'CODE', '... got a code ref');
+
+		is($test->(), 'Foo::Bar::Baz::test', '... got the right value');
+	}
+
+	is(mop::internals::MopMcV::get_method($mcv, 'fail'), undef, '... nothing back from getting the &fail method');
+
 	my $baz = mop::internals::MopMcV::construct_instance($mcv, \(my $x));
 
 	isa_ok($baz, 'Foo::Bar::Baz');
@@ -55,6 +67,16 @@ package Foo::Bar {
 
 	is(mop::internals::MopMcV::name($super), 'Foo::Bar::Baz', '... got the right superclass');
 	is(mop::internals::MopMcV::version($super), '0.01', '... got the right version');
+
+	ok(mop::internals::MopMcV::has_method($mcv, 'test'), '... we have the &test method');
+	ok(!mop::internals::MopMcV::has_method($mcv, 'fail'), '... we do not have the &fail method');
+
+	{
+		my $test = mop::internals::MopMcV::get_method($mcv, 'test');
+		is(ref($test), 'CODE', '... got a code ref');
+
+		is($test->(), 'Foo::Bar::test', '... got the right value');
+	}
 
 	my $bar = mop::internals::MopMcV::construct_instance($mcv, \(my $x));
 
@@ -103,5 +125,27 @@ package Foo::Bar {
 	is(mop::internals::MopMcV::version($mcv), '0.02', '... got the right version');
 	is(mop::internals::MopMcV::authority($mcv), 'cpan:STEVAN', '... got the right authority');
 }
+
+package My::ImportTest {
+	use Data::Dumper qw[ Dumper ];
+	sub test { __PACKAGE__ . '::test' }
+}
+
+{
+	my $mcv = mop::internals::newMopMcV("My::ImportTest");
+
+	ok(mop::internals::MopMcV::has_method($mcv, 'test'), '... we have the &test method');
+	ok(!mop::internals::MopMcV::has_method($mcv, 'Dumper'), '... we do not have the imported &Dumper function');
+
+	{
+		my $test = mop::internals::MopMcV::get_method($mcv, 'test');
+		is(ref($test), 'CODE', '... got a code ref');
+
+		is($test->(), 'My::ImportTest::test', '... got the right value');
+	}
+
+	is(mop::internals::MopMcV::get_method($mcv, 'Dumper'), undef, '... nothing back from getting the &Dumper function');
+}
+
 
 done_testing;

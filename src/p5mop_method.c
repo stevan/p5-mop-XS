@@ -14,9 +14,9 @@ SV* THX_newMopMmV(pTHX_ SV* code) {
  * ***************************************************** */
 
 SV* THX_MopMmV_get_name(pTHX_ SV* metamethod) {
-	return newSVpv(GvNAME(CvGV((CV*) SvRV(metamethod))), 0);
+    return newSVpv(GvNAME(CvGV((CV*) SvRV(metamethod))), 0);
 }
 
 SV* THX_MopMmV_get_associated_class(pTHX_ SV* metamethod) {
-	return newRV_noinc((SV*) CvSTASH(SvRV(metamethod)));
+    return newRV_noinc((SV*) CvSTASH(SvRV(metamethod)));
 }

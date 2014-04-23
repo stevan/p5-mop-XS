@@ -12,7 +12,7 @@ BEGIN {
 };
 
 package Foo::Bar 0.01 {
-	sub baz { "baz" }
+    sub baz { "baz" }
 }
 
 my $m = mop::internals::newMopMmV(\&Foo::Bar::baz);
@@ -25,10 +25,10 @@ is(mop::internals::MopMcV::name($c), 'Foo::Bar', '... got the associated class n
 is(mop::internals::MopMcV::version($c), '0.01', '... got the associated class version correctly');
 
 {
-	my $mcv = mop::internals::newMopMcV("Foo::Bar");
+    my $mcv = mop::internals::newMopMcV("Foo::Bar");
 
-	mop::internals::MopOV::set_at_slot($mcv, "$!test", 10);
-	is(mop::internals::MopOV::get_at_slot($mcv, "$!test"), 10, '... got the value stored in magic');
+    mop::internals::MopOV::set_at_slot($mcv, "$!test", 10);
+    is(mop::internals::MopOV::get_at_slot($mcv, "$!test"), 10, '... got the value stored in magic');
 }
 
 is(mop::internals::MopOV::get_at_slot($c, "$!test"), 10, '... got the value stored in magic (from diff variable)');

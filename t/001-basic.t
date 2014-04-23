@@ -12,19 +12,19 @@ BEGIN {
 };
 
 package test::mop::object 0.01 {
-	our $AUTHORITY = 'cpan:STEVAN';
+    our $AUTHORITY = 'cpan:STEVAN';
 
-	# NOTE: simplistic hack for demo
-	sub new {
-		my $class = shift;
-		no strict 'refs';
-		(\%{$class . '::'})->construct_instance(\(my $x));
-	}
+    # NOTE: simplistic hack for demo
+    sub new {
+        my $class = shift;
+        no strict 'refs';
+        (\%{$class . '::'})->construct_instance(\(my $x));
+    }
 }
 
 package test::mop::class 0.01 {
-	our $AUTHORITY = 'cpan:STEVAN';
-	our @ISA       = ('test::mop::object');
+    our $AUTHORITY = 'cpan:STEVAN';
+    our @ISA       = ('test::mop::object');
 }
 
 my $object = mop::internals::newMopMcV("test::mop::object");
@@ -69,27 +69,27 @@ is($object->authority, 'cpan:STEVAN', '... got the correct authority');
 ok(!$object->has_method('name'), '... has_method only works locally');
 
 package Foo 0.01 {
-	our @ISA = ('test::mop::object');
+    our @ISA = ('test::mop::object');
 
-	sub bar { 'Foo::bar' }
+    sub bar { 'Foo::bar' }
 }
 
 {
-	# yes, this is ugly, I know, but it's
-	# just a demo of creating a metaclass
-	my $Foo = (\%test::mop::class::)->construct_instance(\%Foo::);
+    # yes, this is ugly, I know, but it's
+    # just a demo of creating a metaclass
+    my $Foo = (\%test::mop::class::)->construct_instance(\%Foo::);
 
-	is($Foo->name, 'Foo', '... got the expected name');
-	is($Foo->version, '0.01', '... got the expected version');
+    is($Foo->name, 'Foo', '... got the expected name');
+    is($Foo->version, '0.01', '... got the expected version');
 
-	ok($Foo->has_method('bar'), '... got the method &bar');
+    ok($Foo->has_method('bar'), '... got the method &bar');
 
-	# regular ole stuff works too
-	my $foo = Foo->new;
-	isa_ok($foo, 'Foo');
-	isa_ok($foo, 'test::mop::object');
+    # regular ole stuff works too
+    my $foo = Foo->new;
+    isa_ok($foo, 'Foo');
+    isa_ok($foo, 'test::mop::object');
 
-	is($foo->bar, 'Foo::bar', '... instance methods');
+    is($foo->bar, 'Foo::bar', '... instance methods');
 }
 
 

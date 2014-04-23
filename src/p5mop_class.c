@@ -132,6 +132,7 @@ void THX_MopMcV_add_method(pTHX_ SV* metaclass, SV* name, SV* code) {
 	}
 
 	CvANON_off(method);
+	CvMETHOD_on(method);
 	CvSTASH_set(method, stash);
 	CvGV_set(method, method_gv);
 	GvCV_set(method_gv, method);

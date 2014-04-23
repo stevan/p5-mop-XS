@@ -179,6 +179,14 @@ get_method(metaclass, name)
         RETVAL
 
 void
+add_method(metaclass, name, code)
+    SV* metaclass;
+    SV* name;
+    SV* code;
+    PPCODE:
+        MopMcV_add_method(metaclass, name, code);
+
+void
 construct_instance(metaclass, repr)
     SV* metaclass;
     SV* repr;

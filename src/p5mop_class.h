@@ -36,9 +36,11 @@ void THX_MopMcV_set_superclass(pTHX_ SV* metaclass, SV* superclass);
 
 #define MopMcV_has_method(metaclass, name) THX_MopMcV_has_method(aTHX_ metaclass, name)
 #define MopMcV_get_method(metaclass, name) THX_MopMcV_get_method(aTHX_ metaclass, name)
+#define MopMcV_add_method(metaclass, name, code) THX_MopMcV_add_method(aTHX_ metaclass, name, code)
 
 bool THX_MopMcV_has_method(pTHX_ SV* metaclass, SV* name);
 SV*  THX_MopMcV_get_method(pTHX_ SV* metaclass, SV* name);
+void THX_MopMcV_add_method(pTHX_ SV* metaclass, SV* name, SV* code);
 
 /* *****************************************************
  * Methods

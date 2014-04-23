@@ -30,18 +30,35 @@ package Foo::Bar::Baz 0.01 {
 	{
 		my $test = mop::internals::MopMcV::get_method($mcv, 'test');
 		is(ref($test), 'CODE', '... got a code ref');
+		is(mop::internals::MopMmV::name($test), 'test', '... got the right name');
+		is(mop::internals::MopMmV::associated_class($test), $mcv, '... got the right stash');
 
 		is($test->(), 'Foo::Bar::Baz::test', '... got the right value');
 	}
 
 	is(mop::internals::MopMcV::get_method($mcv, 'fail'), undef, '... nothing back from getting the &fail method');
 
+	mop::internals::MopMcV::add_method($mcv, 'testing', sub {
+		'Foo::Bar::Baz::testing'
+	});
+
+	{
+		my $testing = mop::internals::MopMcV::get_method($mcv, 'testing');
+		is(ref($testing), 'CODE', '... got a code ref');
+		is(mop::internals::MopMmV::name($testing), 'testing', '... got the right name');
+		is(mop::internals::MopMmV::associated_class($testing), $mcv, '... got the right stash');
+
+		is($testing->(), 'Foo::Bar::Baz::testing', '... got the right value');
+	}
+
 	my $baz = mop::internals::MopMcV::construct_instance($mcv, \(my $x));
 
 	isa_ok($baz, 'Foo::Bar::Baz');
 	can_ok($baz, 'test');
+	can_ok($baz, 'testing');
 
 	is($baz->test, 'Foo::Bar::Baz::test', '... got the right value');
+	is($baz->testing, 'Foo::Bar::Baz::testing', '... got the right value');
 }
 
 package Foo::Bar {

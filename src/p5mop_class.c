@@ -116,6 +116,35 @@ SV* THX_MopMcV_get_method(pTHX_ SV* metaclass, SV* name) {
 	return NULL;
 }
 
+static MGVTBL subname_vtbl;
+ 
+#ifndef PERL_MAGIC_ext
+# define PERL_MAGIC_ext '~'
+#endif
+
+void THX_MopMcV_add_method(pTHX_ SV* metaclass, SV* name, SV* code) {
+	GV* method_gv;
+
+	HV* stash  = (HV*) SvRV(metaclass);
+	CV* method = (CV*) SvRV(code);
+
+	HE* method_gv_he = hv_fetch_ent(stash, name, 0, 0);
+	if (method_gv_he != NULL) {
+		method_gv = (GV*) HeVAL(method_gv_he);
+	} else {
+		method_gv = (GV*) newSV(0);
+		gv_init_sv(method_gv, stash, name, 0);
+		(void)hv_store_ent(stash, name, (SV*) method_gv, 0);
+	}
+
+	CvANON_off(method);
+	CvSTASH_set(method, stash);
+	CvGV_set(method, method_gv);
+	GvCV_set(method_gv, method);
+
+	(void)newMopMmV(code);
+}
+
 /* *****************************************************
  * Methods
  * ***************************************************** */

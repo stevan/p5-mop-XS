@@ -100,8 +100,10 @@ package Foo::Bar {
 	isa_ok($bar, 'Foo::Bar');
 	isa_ok($bar, 'Foo::Bar::Baz');
 	can_ok($bar, 'test');
+	can_ok($bar, 'testing');	
 
 	is($bar->test, 'Foo::Bar::test', '... got the right value');
+	is($bar->testing, 'Foo::Bar::Baz::testing', '... got the right value');
 }
 
 # works on as yet to be created packages ...

@@ -116,12 +116,6 @@ SV* THX_MopMcV_get_method(pTHX_ SV* metaclass, SV* name) {
 	return NULL;
 }
 
-static MGVTBL subname_vtbl;
- 
-#ifndef PERL_MAGIC_ext
-# define PERL_MAGIC_ext '~'
-#endif
-
 void THX_MopMcV_add_method(pTHX_ SV* metaclass, SV* name, SV* code) {
 	GV* method_gv;
 

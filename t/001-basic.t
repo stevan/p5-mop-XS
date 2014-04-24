@@ -18,7 +18,7 @@ package test::mop::object 0.01 {
     sub new {
         my $class = shift;
         no strict 'refs';
-        (\%{$class . '::'})->construct_instance(\(my $x));
+        mop::internals::util::get_meta($class)->construct_instance(\(my $x));
     }
 }
 
@@ -77,7 +77,9 @@ package Foo 0.01 {
 {
     # yes, this is ugly, I know, but it's
     # just a demo of creating a metaclass
-    my $Foo = (\%test::mop::class::)->construct_instance(\%Foo::);
+    my $Foo = mop::internals::util::get_meta('test::mop::class')->construct_instance(
+        mop::internals::util::get_meta('Foo')
+    );
 
     is($Foo->name, 'Foo', '... got the expected name');
     is($Foo->version, '0.01', '... got the expected version');
@@ -90,6 +92,13 @@ package Foo 0.01 {
     isa_ok($foo, 'test::mop::object');
 
     is($foo->bar, 'Foo::bar', '... instance methods');
+
+    # we can get the metaclass from an instance too
+    is(
+        mop::internals::util::get_meta($foo),
+        mop::internals::util::get_meta('Foo'),
+        '... can get metaclass from instance or classname'
+    );
 }
 
 

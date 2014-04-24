@@ -221,3 +221,21 @@ name(meta_attr)
     OUTPUT:
         RETVAL
 
+MODULE = mop  PACKAGE = mop::internals::util
+
+SV* 
+get_meta(name)
+    SV* name;
+    CODE:
+        SvGETMAGIC(name);
+        if (SvROK(name) && SvOBJECT(SvRV(name))) {
+            const char* name_str = sv_reftype(SvRV(name), TRUE);
+            name = newSVpv(name_str, strlen(name_str));
+        }
+        RETVAL = newMopMcV(name);
+    OUTPUT:
+        RETVAL
+
+
+
+

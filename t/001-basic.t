@@ -17,7 +17,6 @@ package test::mop::object 0.01 {
     # NOTE: simplistic hack for demo
     sub new {
         my $class = shift;
-        no strict 'refs';
         mop::internals::util::get_meta($class)->construct_instance(\(my $x));
     }
 }
@@ -75,8 +74,6 @@ package Foo 0.01 {
 }
 
 {
-    # yes, this is ugly, I know, but it's
-    # just a demo of creating a metaclass
     my $Foo = mop::internals::util::get_meta('test::mop::class')->construct_instance(
         mop::internals::util::get_meta('Foo')
     );
@@ -93,7 +90,6 @@ package Foo 0.01 {
 
     is($foo->bar, 'Foo::bar', '... instance methods');
 
-    # we can get the metaclass from an instance too
     is(
         mop::internals::util::get_meta($foo),
         mop::internals::util::get_meta('Foo'),

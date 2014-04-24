@@ -227,7 +227,6 @@ SV*
 get_meta(name)
     SV* name;
     CODE:
-        SvGETMAGIC(name);
         if (SvROK(name) && SvOBJECT(SvRV(name))) {
             const char* name_str = sv_reftype(SvRV(name), TRUE);
             name = newSVpv(name_str, strlen(name_str));

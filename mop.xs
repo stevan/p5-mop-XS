@@ -228,13 +228,11 @@ get_meta(name)
     SV* name;
     CODE:
         if (SvROK(name) && SvOBJECT(SvRV(name))) {
-            const char* name_str = sv_reftype(SvRV(name), TRUE);
-            name = newSVpv(name_str, strlen(name_str));
+            name = newSVpv(sv_reftype(SvRV(name), TRUE), 0);
         }
         RETVAL = newMopMcV(name);
     OUTPUT:
         RETVAL
-
 
 
 

@@ -87,7 +87,7 @@ void THX_MopMcV_set_superclass(pTHX_ SV* metaclass, SV* superclass) {
 // methods
 
 bool THX_MopMcV_has_method(pTHX_ SV* metaclass, SV* name) {
-    HV* stash  = (HV*) SvRV(metaclass);
+    HV* stash = (HV*) SvRV(metaclass);
 
     HE* method_gv_he = hv_fetch_ent(stash, name, 0, 0);
     if (method_gv_he != NULL) {
@@ -102,7 +102,7 @@ bool THX_MopMcV_has_method(pTHX_ SV* metaclass, SV* name) {
 }
 
 SV* THX_MopMcV_get_method(pTHX_ SV* metaclass, SV* name) {
-    HV* stash  = (HV*) SvRV(metaclass);
+    HV* stash = (HV*) SvRV(metaclass);
 
     HE* method_gv_he = hv_fetch_ent(stash, name, 0, 0);
     if (method_gv_he != NULL) {

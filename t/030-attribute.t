@@ -11,8 +11,12 @@ BEGIN {
     use_ok('mop')
 };
 
-my $a = mop::internals::newMopMaV('$!test');
+package Foo::Bar::Baz 0.01 {}
 
-is(mop::internals::MopMaV::name($a), '$!test', '... got the right name');
+{
+    my $a = mop::internals::newMopMaV('$!test');
+
+    is(mop::internals::MopMaV::name($a), '$!test', '... got the right name');
+}
 
 done_testing;

@@ -18,7 +18,15 @@ SV* THX_newMopMaV(pTHX_ SV* name);
 
 #define MopMaV_get_name(meta_attr) THX_MopMaV_get_name(aTHX_ meta_attr)
 
-SV* THX_MopMaV_get_name(pTHX_ SV* meta_attr);
+SV*  THX_MopMaV_get_name(pTHX_ SV* meta_attr);
+
+// associated metaclass
+
+#define MopMaV_get_associated_class(meta_attr) THX_MopMaV_get_associated_class(aTHX_ meta_attr)
+#define MopMaV_set_associated_class(meta_attr, metaclass) THX_MopMaV_set_associated_class(aTHX_ meta_attr, metaclass)
+
+SV*  THX_MopMaV_get_associated_class(pTHX_ SV* meta_attr);
+void THX_MopMaV_set_associated_class(pTHX_ SV* meta_attr, SV* metaclass);
 
 /* *****************************************************
  * Methods

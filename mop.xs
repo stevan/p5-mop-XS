@@ -24,12 +24,9 @@ SV*
 newMopMcV(name)
     SV* name;
 
-void
+SV*
 newMopMmV(code)
     SV* code;
-    PPCODE:
-        (void)newMopMmV(code);
-        XSRETURN(1);
 
 SV*
 newMopMaV(name)

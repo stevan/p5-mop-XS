@@ -12,7 +12,7 @@ BEGIN {
 };
 
 package Foo::Bar::Baz 0.01 {
-    sub test { __PACKAGE__ . '::test' }
+    sub test {  __PACKAGE__ . '::test' }
 }
 
 {
@@ -34,10 +34,36 @@ package Foo::Bar::Baz 0.01 {
         is(mop::internals::MopMmV::associated_class($test), $mcv, '... got the right stash');
 
         is($test->(), 'Foo::Bar::Baz::test', '... got the right value');
+
+        my ($before, $after) = (0, 0);
+        mop::internals::MopOV::bind_event($test, 'before:EXECUTE', sub { $before++ });
+        mop::internals::MopOV::bind_event($test, 'after:EXECUTE', sub { $after++ });
+
+        is($test->(), 'Foo::Bar::Baz::test', '... got the right value');
+        is($before, 1, '... our before:EXECUTE event fired');
+        is($after, 1, '... our after:EXECUTE event fired');
+
+        # call method ...
+        my $baz = mop::internals::MopMcV::construct_instance($mcv, \(my $x));
+
+        isa_ok($baz, 'Foo::Bar::Baz');
+        can_ok($baz, 'test');
+
+        is($baz->test, 'Foo::Bar::Baz::test', '... got the right value');
+        is($before, 2, '... our before:EXECUTE event fired');
+        is($after, 2, '... our after:EXECUTE event fired');
+
+        is($test->(), 'Foo::Bar::Baz::test', '... got the right value');
+        is($before, 3, '... our before:EXECUTE event fired');
+        is($after, 3, '... our after:EXECUTE event fired');
+
+        is($baz->test, 'Foo::Bar::Baz::test', '... got the right value');
+        is($before, 4, '... our before:EXECUTE event fired');
+        is($after, 4, '... our after:EXECUTE event fired');
     }
 
     is(mop::internals::MopMcV::get_method($mcv, 'fail'), undef, '... nothing back from getting the &fail method');
-
+=pod
     mop::internals::MopMcV::add_method($mcv, 'testing', sub {
         'Foo::Bar::Baz::testing'
     });
@@ -50,15 +76,15 @@ package Foo::Bar::Baz 0.01 {
 
         is($testing->(), 'Foo::Bar::Baz::testing', '... got the right value');
     }
-
+=cut
     my $baz = mop::internals::MopMcV::construct_instance($mcv, \(my $x));
 
     isa_ok($baz, 'Foo::Bar::Baz');
     can_ok($baz, 'test');
-    can_ok($baz, 'testing');
+#    can_ok($baz, 'testing');
 
     is($baz->test, 'Foo::Bar::Baz::test', '... got the right value');
-    is($baz->testing, 'Foo::Bar::Baz::testing', '... got the right value');
+#    is($baz->testing, 'Foo::Bar::Baz::testing', '... got the right value');
 }
 
 package Foo::Bar {
@@ -100,10 +126,10 @@ package Foo::Bar {
     isa_ok($bar, 'Foo::Bar');
     isa_ok($bar, 'Foo::Bar::Baz');
     can_ok($bar, 'test');
-    can_ok($bar, 'testing');    
+#    can_ok($bar, 'testing');    
 
     is($bar->test, 'Foo::Bar::test', '... got the right value');
-    is($bar->testing, 'Foo::Bar::Baz::testing', '... got the right value');
+#    is($bar->testing, 'Foo::Bar::Baz::testing', '... got the right value');
 }
 
 # works on as yet to be created packages ...

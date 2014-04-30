@@ -11,6 +11,7 @@ BEGIN {
     use_ok('mop')
 };
 
+=pod
 package test::mop::object 0.01 {
     our $AUTHORITY = 'cpan:STEVAN';
 
@@ -97,6 +98,6 @@ package Foo 0.01 {
     );
 }
 
-
+=cut
 
 done_testing;

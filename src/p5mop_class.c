@@ -117,10 +117,10 @@ SV* THX_MopMcV_get_method(pTHX_ SV* metaclass, SV* name) {
 }
 
 void THX_MopMcV_add_method(pTHX_ SV* metaclass, SV* name, SV* code) {
+    CV* method;
     GV* method_gv;
 
     HV* stash  = (HV*) SvRV(metaclass);
-    CV* method = (CV*) SvRV(code);
 
     HE* method_gv_he = hv_fetch_ent(stash, name, 0, 0);
     if (method_gv_he != NULL) {
@@ -130,12 +130,6 @@ void THX_MopMcV_add_method(pTHX_ SV* metaclass, SV* name, SV* code) {
         gv_init_sv(method_gv, stash, name, 0);
         (void)hv_store_ent(stash, name, (SV*) method_gv, 0);
     }
-
-    CvANON_off(method);
-    CvMETHOD_on(method);
-    CvSTASH_set(method, stash);
-    CvGV_set(method, method_gv);
-    GvCV_set(method_gv, method);
 
     (void)newMopMmV(code);
 }

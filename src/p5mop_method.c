@@ -83,6 +83,10 @@ static void _MopMmV_wrapper (pTHX_ CV *cv) {
 
     {
         ENTER;
+        PUSHMARK(SP);
+        for (j = 0; j < items; j++)
+          PUSHs(args[j]);
+        PUTBACK;
         count = call_sv((SV*) body, GIMME_V);
         SPAGAIN;
 
@@ -93,11 +97,11 @@ static void _MopMmV_wrapper (pTHX_ CV *cv) {
     }
 
     for (j = 0; j < av_len(results) + 1; j++)
-      PUSHs(*av_fetch(results, j, 0));
+      ST(j) = *av_fetch(results, av_len(results) - j, 0);
 
     if (has_events) {
         MopOV_fire_event(object, newSVpv("after:EXECUTE", 13), args, items-1);   
     }
 
-    XSRETURN(1);
+    XSRETURN(av_len(results) + 1);
 }

@@ -28,8 +28,17 @@ package Foo::Bar::Baz 0.01 {
     ok(!mop::internals::MopMcV::has_method($mcv, 'fail'), '... we do not have the &fail method');
 
     {
-        my $test = mop::internals::MopMcV::get_method($mcv, 'test');
-        is(ref($test), 'CODE', '... got a code ref');
+        my $old_test = mop::internals::MopMcV::get_method($mcv, 'test');
+        is(ref($old_test), 'CODE', '... got a code ref');
+
+        my $test = mop::internals::MopMcV::upgrade_method($mcv, $old_test);
+        isnt($test, $old_test, '... the method has been upgraded');
+        is(
+            mop::internals::MopMcV::get_method($mcv, 'test'),
+            $test,
+            '... we can tell now when we refetch it'
+        );
+
         is(mop::internals::MopMmV::name($test), 'test', '... got the right name');
         is(mop::internals::MopMmV::associated_class($test), $mcv, '... got the right stash');
 
@@ -65,7 +74,7 @@ package Foo::Bar::Baz 0.01 {
 
 
     is(mop::internals::MopMcV::get_method($mcv, 'fail'), undef, '... nothing back from getting the &fail method');
-=pod
+
     mop::internals::MopMcV::add_method($mcv, 'testing', sub {
         'Foo::Bar::Baz::testing'
     });
@@ -78,15 +87,15 @@ package Foo::Bar::Baz 0.01 {
 
         is($testing->(), 'Foo::Bar::Baz::testing', '... got the right value');
     }
-=cut
+
     my $baz = mop::internals::MopMcV::construct_instance($mcv, \(my $x));
 
     isa_ok($baz, 'Foo::Bar::Baz');
     can_ok($baz, 'test');
-#    can_ok($baz, 'testing');
+    can_ok($baz, 'testing');
 
     is($baz->test, 'Foo::Bar::Baz::test', '... got the right value');
-#    is($baz->testing, 'Foo::Bar::Baz::testing', '... got the right value');
+    is($baz->testing, 'Foo::Bar::Baz::testing', '... got the right value');
 }
 
 package Foo::Bar {
@@ -128,10 +137,10 @@ package Foo::Bar {
     isa_ok($bar, 'Foo::Bar');
     isa_ok($bar, 'Foo::Bar::Baz');
     can_ok($bar, 'test');
-#    can_ok($bar, 'testing');    
+    can_ok($bar, 'testing');    
 
     is($bar->test, 'Foo::Bar::test', '... got the right value');
-#    is($bar->testing, 'Foo::Bar::Baz::testing', '... got the right value');
+    is($bar->testing, 'Foo::Bar::Baz::testing', '... got the right value');
 }
 
 # works on as yet to be created packages ...

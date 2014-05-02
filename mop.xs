@@ -27,6 +27,9 @@ newMopMcV(name)
 SV*
 newMopMmV(code)
     SV* code;
+    PPCODE:
+        EXTEND(SP, 1);
+        PUSHs(newMopMmV(code, boolSV(true)));
 
 SV*
 newMopMaV(name)
@@ -172,6 +175,15 @@ get_method(metaclass, name)
     SV* name;
     CODE:
         RETVAL = MopMcV_get_method(metaclass, name);
+    OUTPUT:
+        RETVAL
+
+SV*
+upgrade_method(metaclass, code)
+    SV* metaclass;
+    SV* code;
+    CODE:
+        RETVAL = MopMcV_upgrade_method(metaclass, code);
     OUTPUT:
         RETVAL
 

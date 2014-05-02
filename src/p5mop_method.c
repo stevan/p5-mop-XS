@@ -60,6 +60,7 @@ static void _MopMmV_wrapper (pTHX_ CV *cv) {
     SV** args;
     CV*  body;
     SV*  object = newRV_noinc((SV*) cv);
+    AV* results = newAV();
     
     dXSARGS;
 
@@ -83,18 +84,20 @@ static void _MopMmV_wrapper (pTHX_ CV *cv) {
     {
         ENTER;
         count = call_sv((SV*) body, GIMME_V);
+        SPAGAIN;
+
+        while (count-- > 0)
+          av_push(results, POPs);
+
         LEAVE;
     }
 
-    PUSHMARK(SP);
-    fprintf(stderr, "RESULTS: %d\n", count);
-    for (j = 0; j < count; j++) {
-        sv_dump(ST(j));
-        XPUSHs(ST(j));
-    }
-    PUTBACK;
+    for (j = 0; j < av_len(results) + 1; j++)
+      PUSHs(*av_fetch(results, j, 0));
 
     if (has_events) {
         MopOV_fire_event(object, newSVpv("after:EXECUTE", 13), args, items-1);   
     }
+
+    XSRETURN(1);
 }

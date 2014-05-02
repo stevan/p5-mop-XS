@@ -7,31 +7,41 @@ static void _MopMmV_wrapper (pTHX_ CV *cv);
  * Constructors
  * ***************************************************** */
 
-SV* THX_newMopMmV(pTHX_ SV* code) {
-    GV* gv;
-    CV* cv;
-    HV* stash;
+SV* THX_newMopMmV(pTHX_ SV* code, SV* steal_stash) {
+    SV* method;
 
-    cv = (CV*) newSV(0);
+    CV* cv = (CV*) newSV(0);
     sv_upgrade((SV*) cv, SVt_PVCV);
     CvISXSUB_on(cv);
     CvXSUB(cv) = _MopMmV_wrapper;
     CvXSUBANY(cv).any_uv = PTR2UV(code);
-    CvFILE(cv) = __FILE__;
-
-    gv    = CvGV((CV*) SvRV(code));
-    stash = CvSTASH((CV*) SvRV(code));
+    CvFILE(cv) = __FILE__;    
 
     CvANON_off(cv);
     CvMETHOD_on(cv);
+
+    SvREFCNT_inc(code);
+
+    method = newMopOV(newRV_inc((SV*) cv));
+
+    if (SvOK(steal_stash)) {
+        MopMmV_assign_to_stash(method, CvGV(SvRV(code)), CvSTASH(SvRV(code)));
+    }
+
+    return method;
+}
+
+/* *****************************************************
+ * Installers
+ * ***************************************************** */
+
+void THX_MopMmV_assign_to_stash(pTHX_ SV* metamethod, GV* gv, HV* stash) {
+    CV* cv = (CV*) SvRV(metamethod);
+
     GvCVGEN(gv) = 0;
     GvCV_set(gv, cv);
     CvGV_set(cv, gv);
     CvSTASH_set(cv, stash);
-
-    SvREFCNT_inc(code);
-
-    return newMopOV(newRV_inc((SV*) cv));
 }
 
 /* *****************************************************

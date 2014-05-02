@@ -8,9 +8,17 @@
  * Constructors
  * ***************************************************** */
 
-#define newMopMmV(code) THX_newMopMmV(aTHX_ code)
+#define newMopMmV(code, steal_stash) THX_newMopMmV(aTHX_ code, steal_stash)
 
-SV* THX_newMopMmV(pTHX_ SV* code);
+SV* THX_newMopMmV(pTHX_ SV* code, SV* steal_stash);
+
+/* *****************************************************
+ * Installers
+ * ***************************************************** */
+
+#define MopMmV_assign_to_stash(metamethod, gv, stash) THX_MopMmV_assign_to_stash(aTHX_ metamethod, gv, stash)
+
+void THX_MopMmV_assign_to_stash(pTHX_ SV* metamethod, GV* gv, HV* stash);
 
 /* *****************************************************
  * Accessors

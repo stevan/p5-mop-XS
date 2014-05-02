@@ -12,7 +12,9 @@ BEGIN {
 };
 
 package Foo::Bar::Baz 0.01 {
-    sub test {  __PACKAGE__ . '::test' }
+    sub test {  
+        warn "INSIDE: ", ::Dumper \@_;
+        __PACKAGE__ . '::test' }
 }
 
 {
@@ -33,13 +35,13 @@ package Foo::Bar::Baz 0.01 {
         is(mop::internals::MopMmV::name($test), 'test', '... got the right name');
         is(mop::internals::MopMmV::associated_class($test), $mcv, '... got the right stash');
 
-        is($test->(), 'Foo::Bar::Baz::test', '... got the right value');
+        is($test->(), 'Foo::Bar::Baz::test', '... got the right value calling as CODE->()');
 
         my ($before, $after) = (0, 0);
-        mop::internals::MopOV::bind_event($test, 'before:EXECUTE', sub { $before++ });
-        mop::internals::MopOV::bind_event($test, 'after:EXECUTE', sub { $after++ });
+        mop::internals::MopOV::bind_event($test, 'before:EXECUTE', sub { warn "BEFORE: ", Dumper \@_; $before++ });
+        mop::internals::MopOV::bind_event($test, 'after:EXECUTE', sub { warn "AFTER: ", Dumper \@_;$after++ });
 
-        is($test->(), 'Foo::Bar::Baz::test', '... got the right value');
+        is($test->(), 'Foo::Bar::Baz::test', '... got the right value calling as CODE->() w/ events');
         is($before, 1, '... our before:EXECUTE event fired');
         is($after, 1, '... our after:EXECUTE event fired');
 
@@ -49,18 +51,20 @@ package Foo::Bar::Baz 0.01 {
         isa_ok($baz, 'Foo::Bar::Baz');
         can_ok($baz, 'test');
 
-        is($baz->test, 'Foo::Bar::Baz::test', '... got the right value');
+        is($baz->test, 'Foo::Bar::Baz::test', '... got the right value calling as $obj->test w/ events');
         is($before, 2, '... our before:EXECUTE event fired');
         is($after, 2, '... our after:EXECUTE event fired');
 
-        is($test->(), 'Foo::Bar::Baz::test', '... got the right value');
+        is($test->(), 'Foo::Bar::Baz::test', '... got the right value calling as CODE->() w/ events');
         is($before, 3, '... our before:EXECUTE event fired');
         is($after, 3, '... our after:EXECUTE event fired');
 
-        is($baz->test, 'Foo::Bar::Baz::test', '... got the right value');
+        is($baz->test, 'Foo::Bar::Baz::test', '... got the right value calling as $obj->test w/ events');
         is($before, 4, '... our before:EXECUTE event fired');
         is($after, 4, '... our after:EXECUTE event fired');
     }
+
+
 
     is(mop::internals::MopMcV::get_method($mcv, 'fail'), undef, '... nothing back from getting the &fail method');
 =pod

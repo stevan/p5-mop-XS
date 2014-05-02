@@ -63,32 +63,38 @@ static void _MopMmV_wrapper (pTHX_ CV *cv) {
     
     dXSARGS;
 
+    fprintf(stderr, "STACK SIZE: %d\n", items);
+    for (j = 0; j < items; j++) {
+        sv_dump(ST(j));
+    }
+
     has_events = MopOV_has_events(object);
     body       = (CV*) CvXSUBANY(cv).any_uv;
 
-    Newx(args, items, SV*);
-    for (j = 0; j <= items; j++) {
-        args[j] = ST(j);
-    }
 
     if (has_events) {
-        MopOV_fire_event(object, newSVpv("before:EXECUTE", 14), args, items);
+        Newx(args, items, SV*);
+        for (j = 0; j < items; j++) {
+            args[j] = ST(j);
+        }
+        MopOV_fire_event(object, newSVpv("before:EXECUTE", 14), args, items-1);
     }
 
     {
-        dSP;
-        PUSHMARK(SP);
-        for (j = 0; j <= items; j++) {
-            XPUSHs(args[j]);
-        }
-        PUTBACK;
+        ENTER;
         count = call_sv((SV*) body, GIMME_V);
-
-        SPAGAIN;
-        PUTBACK;
+        LEAVE;
     }
 
+    PUSHMARK(SP);
+    fprintf(stderr, "RESULTS: %d\n", count);
+    for (j = 0; j < count; j++) {
+        sv_dump(ST(j));
+        XPUSHs(ST(j));
+    }
+    PUTBACK;
+
     if (has_events) {
-        MopOV_fire_event(object, newSVpv("after:EXECUTE", 13), args, items);   
+        MopOV_fire_event(object, newSVpv("after:EXECUTE", 13), args, items-1);   
     }
 }

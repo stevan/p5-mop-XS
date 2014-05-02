@@ -11,20 +11,22 @@ BEGIN {
     use_ok('mop')
 };
 
-sub foo { $_[0] + 10 }
+sub foo { 
+    warn "INSIDE:", Dumper \@_;
+    $_[0] + 10 }
 
 {
     my $m = mop::internals::newMopMmV(\&foo);
 
     my ($before, $after) = (0, 0);
-    mop::internals::MopOV::bind_event($m, 'before:EXECUTE', sub { $before++ });
-    mop::internals::MopOV::bind_event($m, 'after:EXECUTE', sub { $after++ });
+    mop::internals::MopOV::bind_event($m, 'before:EXECUTE', sub { warn "BEFORE", Dumper \@_; $before++ });
+    mop::internals::MopOV::bind_event($m, 'after:EXECUTE', sub { warn "AFTER", Dumper \@_; $after++ });
 
-    is($m->(5), 15, '... got the right value');
+    is($m->(5), 15, '... got the right value calling CODE->() w/ events');
     is($before, 1, '... our before:EXECUTE event fired');
     is($after, 1, '... our after:EXECUTE event fired');
 
-    is(foo(20), 30, '... got the right value');
+    is(foo(20), 30, '... got the right value calling foo() w/ events');
     is($before, 2, '... our before:EXECUTE event fired');
     is($after, 2, '... our after:EXECUTE event fired');
 }
@@ -38,7 +40,7 @@ sub bar { ($_[0] + 10, $_[0] - 5) }
     mop::internals::MopOV::bind_event($m, 'before:EXECUTE', sub { $before++ });
     mop::internals::MopOV::bind_event($m, 'after:EXECUTE', sub { $after++ });
 
-    warn Dumper [ $m->(5) ];
+    #warn Dumper [ $m->(5) ];
 
     is_deeply([ $m->(5) ], [ 15, 0 ], '... got the right value');
     is($before, 1, '... our before:EXECUTE event fired');

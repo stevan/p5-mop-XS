@@ -214,7 +214,7 @@ bool isSVrv_a_MopOV(SV* rv) {
         MAGIC* mg;
         for (mg = SvMAGIC(SvRV(rv)); mg; mg = mg->mg_moremagic) {
             if ((mg->mg_type == PERL_MAGIC_ext) && (mg->mg_virtual == &MopOV_vtbl)) {
-                return mg->mg_ptr != NULL ? true : false;
+                return mg->mg_ptr != NULL ? TRUE : FALSE;
             }
         }
     }

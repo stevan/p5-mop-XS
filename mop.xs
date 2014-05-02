@@ -29,7 +29,7 @@ newMopMmV(code)
     SV* code;
     PPCODE:
         EXTEND(SP, 1);
-        PUSHs(newMopMmV(code, boolSV(true)));
+        PUSHs(newMopMmV(code, boolSV(TRUE)));
 
 SV*
 newMopMaV(name)

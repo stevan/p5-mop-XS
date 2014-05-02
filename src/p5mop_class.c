@@ -94,11 +94,11 @@ bool THX_MopMcV_has_method(pTHX_ SV* metaclass, SV* name) {
         GV* method_gv = (GV*) HeVAL(method_gv_he);
         CV* method    = GvCV(method_gv);
         if (method != NULL && GvSTASH(CvGV(method)) == stash) {
-            return true;
+            return TRUE;
         }
     }
     
-    return false;
+    return FALSE;
 }
 
 SV* THX_MopMcV_get_method(pTHX_ SV* metaclass, SV* name) {
@@ -117,7 +117,7 @@ SV* THX_MopMcV_get_method(pTHX_ SV* metaclass, SV* name) {
 }
 
 SV* THX_MopMcV_upgrade_method(pTHX_ SV* metaclass, SV* code) {
-    return newMopMmV(code, boolSV(true));
+    return newMopMmV(code, boolSV(TRUE));
 }
 
 void THX_MopMcV_add_method(pTHX_ SV* metaclass, SV* name, SV* code) {

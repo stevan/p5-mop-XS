@@ -41,7 +41,6 @@ SV* THX_newMopOV(pTHX_ SV* rv) {
     opaque->id        = new_uuid();
     opaque->slots     = newHV();
     opaque->callbacks = newHV();
-    opaque->class     = newSV(0);
 
     sv_magicext(SvRV(rv), NULL, PERL_MAGIC_ext, &MopOV_vtbl, (char*) opaque, 0);
 
@@ -58,9 +57,6 @@ void THX_freeMopOV(pTHX_ MopOV* opaque) {
     hv_undef(opaque->slots);
     hv_undef(opaque->callbacks);
 
-    SvREFCNT_dec(opaque->class);
-    opaque->class = NULL;
-
     Safefree(opaque->id);
     opaque->id        = NULL;
     opaque->slots     = NULL;
@@ -68,25 +64,6 @@ void THX_freeMopOV(pTHX_ MopOV* opaque) {
 
     Safefree(opaque);
     opaque = NULL;
-}
-
-/* *****************************************************
- * Class access
- * ***************************************************** */
-
-SV*  THX_MopOV_get_class(pTHX_ SV* rv) {
-    MopOV* opaque = SVrv_to_MopOV(rv);
-    return opaque->class;
-}
-
-void THX_MopOV_set_class(pTHX_ SV* rv, SV* class) {
-    MopOV* opaque = SVrv_to_MopOV(rv);
-    opaque->class = class;
-}
-
-bool THX_MopOV_has_class(pTHX_ SV* rv) {
-    MopOV* opaque = SVrv_to_MopOV(rv);
-    return SvOK(opaque->class);
 }
 
 /* *****************************************************

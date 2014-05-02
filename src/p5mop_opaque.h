@@ -10,7 +10,6 @@
 
 typedef struct {
     I32* id;
-    SV*  class;
     HV*  slots;
     HV*  callbacks;
 } MopOV;
@@ -29,16 +28,6 @@ SV* THX_newMopOV(pTHX_ SV* rv);
 #define freeMopOV(opaque) THX_freeMopOV(aTHX_ opaque)
 
 void THX_freeMopOV(pTHX_ MopOV* opaque);
-
-// Class access ...
-
-#define MopOV_has_class(rv) THX_MopOV_has_class(aTHX_ rv)
-#define MopOV_get_class(rv) THX_MopOV_get_class(aTHX_ rv)
-#define MopOV_set_class(rv) THX_MopOV_set_class(aTHX_ rv)
-
-SV*  THX_MopOV_get_class(pTHX_ SV* rv);
-void THX_MopOV_set_class(pTHX_ SV* rv, SV* class);
-bool THX_MopOV_has_class(pTHX_ SV* rv);
 
 // Slot access ...
 

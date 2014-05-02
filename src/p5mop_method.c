@@ -59,19 +59,20 @@ static void _MopMmV_wrapper (pTHX_ CV *cv) {
     I32  j, count;
     SV** args;
     CV*  body;
-    SV*  object = newRV_noinc((SV*) cv);
-    AV* results = newAV();
+    SV*  object  = newRV_noinc((SV*) cv);
+    AV*  results = newAV();
     
     dXSARGS;
 
+/*
     fprintf(stderr, "STACK SIZE: %d\n", items);
     for (j = 0; j < items; j++) {
         sv_dump(ST(j));
     }
+*/
 
     has_events = MopOV_has_events(object);
     body       = (CV*) CvXSUBANY(cv).any_uv;
-
 
     if (has_events) {
         Newx(args, items, SV*);
@@ -84,20 +85,23 @@ static void _MopMmV_wrapper (pTHX_ CV *cv) {
     {
         ENTER;
         PUSHMARK(SP);
-        for (j = 0; j < items; j++)
-          PUSHs(args[j]);
+        for (j = 0; j < items; j++) {
+            PUSHs(args[j]);
+        }
         PUTBACK;
         count = call_sv((SV*) body, GIMME_V);
         SPAGAIN;
 
-        while (count-- > 0)
-          av_push(results, POPs);
+        while (count-- > 0) {
+            av_push(results, POPs);
+        }
 
         LEAVE;
     }
 
-    for (j = 0; j < av_len(results) + 1; j++)
-      ST(j) = *av_fetch(results, av_len(results) - j, 0);
+    for (j = 0; j < av_len(results) + 1; j++) {
+        ST(j) = *av_fetch(results, av_len(results) - j, 0);
+    }
 
     if (has_events) {
         MopOV_fire_event(object, newSVpv("after:EXECUTE", 13), args, items-1);   

@@ -109,18 +109,21 @@ SV* THX_MopMcV_get_method(pTHX_ SV* metaclass, SV* name) {
         GV* method_gv = (GV*) HeVAL(method_gv_he);
         CV* method    = GvCV(method_gv);
         if (method != NULL && GvSTASH(CvGV(method)) == stash) {
-            return newMopMmV(newRV_inc((SV*) method));  
+            return newRV_inc((SV*) method);  
         }
     }
     
     return NULL;
 }
 
-void THX_MopMcV_add_method(pTHX_ SV* metaclass, SV* name, SV* code) {
-    CV* method;
-    GV* method_gv;
+SV* THX_MopMcV_upgrade_method(pTHX_ SV* metaclass, SV* code) {
+    return newMopMmV(code, boolSV(true));
+}
 
+void THX_MopMcV_add_method(pTHX_ SV* metaclass, SV* name, SV* code) {
+    GV* method_gv;
     HV* stash  = (HV*) SvRV(metaclass);
+    SV* method = newMopMmV(code, boolSV(false));
 
     HE* method_gv_he = hv_fetch_ent(stash, name, 0, 0);
     if (method_gv_he != NULL) {
@@ -131,7 +134,7 @@ void THX_MopMcV_add_method(pTHX_ SV* metaclass, SV* name, SV* code) {
         (void)hv_store_ent(stash, name, (SV*) method_gv, 0);
     }
 
-    (void)newMopMmV(code);
+    MopMmV_assign_to_stash(method, method_gv, stash);
 }
 
 /* *****************************************************

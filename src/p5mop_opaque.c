@@ -186,7 +186,6 @@ void THX_MopOV_fire_event(pTHX_ SV* rv, SV* event_name, SV** args, I32 args_len)
                 ENTER;
                 SAVETMPS;
                 PUSHMARK(SP);
-                XPUSHs(rv);
                 for (j = 0; j <= args_len; j++) {
                     XPUSHs(args[j]);
                 }

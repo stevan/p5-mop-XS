@@ -43,7 +43,7 @@ BEGIN {
     ok(mop::internals::MopOV::has_events($o), '... have events now');
     is(mop::internals::MopOV::get_at_slot($o, "test"), 0, '... test event has not been fired');
 
-    mop::internals::MopOV::fire_event($o, 'test');
+    mop::internals::MopOV::fire_event($o, 'test' => ($o));
 
     is(mop::internals::MopOV::get_at_slot($o, "test"), 1, '... test event has been fired');
 
@@ -51,7 +51,7 @@ BEGIN {
 
     ok(!mop::internals::MopOV::has_events($o), '... no events anymore');
 
-    mop::internals::MopOV::fire_event($o, 'test');
+    mop::internals::MopOV::fire_event($o, 'test' => ($o));
     is(mop::internals::MopOV::get_at_slot($o, "test"), 1, '... test event was not fired again');
 }
 

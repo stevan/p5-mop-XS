@@ -11,16 +11,14 @@ BEGIN {
     use_ok('mop')
 };
 
-sub foo { 
-    warn "INSIDE:", Dumper \@_;
-    $_[0] + 10 }
+sub foo { $_[0] + 10 }
 
 {
     my $m = mop::internals::newMopMmV(\&foo);
 
     my ($before, $after) = (0, 0);
-    mop::internals::MopOV::bind_event($m, 'before:EXECUTE', sub { warn "BEFORE", Dumper \@_; $before++ });
-    mop::internals::MopOV::bind_event($m, 'after:EXECUTE', sub { warn "AFTER", Dumper \@_; $after++ });
+    mop::internals::MopOV::bind_event($m, 'before:EXECUTE', sub { $before++ });
+    mop::internals::MopOV::bind_event($m, 'after:EXECUTE', sub { $after++ });
 
     is($m->(5), 15, '... got the right value calling CODE->() w/ events');
     is($before, 1, '... our before:EXECUTE event fired');

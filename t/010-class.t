@@ -12,9 +12,7 @@ BEGIN {
 };
 
 package Foo::Bar::Baz 0.01 {
-    sub test {  
-        warn "INSIDE: ", ::Dumper \@_;
-        __PACKAGE__ . '::test' }
+    sub test { __PACKAGE__ . '::test' }
 }
 
 {
@@ -38,8 +36,8 @@ package Foo::Bar::Baz 0.01 {
         is($test->(), 'Foo::Bar::Baz::test', '... got the right value calling as CODE->()');
 
         my ($before, $after) = (0, 0);
-        mop::internals::MopOV::bind_event($test, 'before:EXECUTE', sub { warn "BEFORE: ", Dumper \@_; $before++ });
-        mop::internals::MopOV::bind_event($test, 'after:EXECUTE', sub { warn "AFTER: ", Dumper \@_;$after++ });
+        mop::internals::MopOV::bind_event($test, 'before:EXECUTE', sub { $before++ });
+        mop::internals::MopOV::bind_event($test, 'after:EXECUTE', sub { $after++ });
 
         is($test->(), 'Foo::Bar::Baz::test', '... got the right value calling as CODE->() w/ events');
         is($before, 1, '... our before:EXECUTE event fired');

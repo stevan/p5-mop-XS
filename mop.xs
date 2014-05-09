@@ -185,7 +185,7 @@ has_method(metaclass, name)
         STRLEN name_len;
     CODE:
         name_str = SvPV(name, name_len);
-        RETVAL = boolSV(MopMcV_has_method(metaclass, name_str, name_len));
+        RETVAL = MopMcV_has_method(metaclass, name_str, name_len);
     OUTPUT:
         RETVAL
 

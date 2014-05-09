@@ -172,8 +172,12 @@ SV*
 has_method(metaclass, name)
     SV* metaclass;
     SV* name;
+    PREINIT:
+        const char* name_str;
+        STRLEN name_len;
     CODE:
-        RETVAL = boolSV(MopMcV_has_method(metaclass, name));
+        name_str = SvPV(name, name_len);
+        RETVAL = boolSV(MopMcV_has_method(metaclass, name_str, name_len));
     OUTPUT:
         RETVAL
 
@@ -181,8 +185,12 @@ SV*
 get_method(metaclass, name)
     SV* metaclass;
     SV* name;
+    PREINIT:
+        const char* name_str;
+        STRLEN name_len;
     CODE:
-        RETVAL = MopMcV_get_method(metaclass, name);
+        name_str = SvPV(name, name_len);
+        RETVAL = MopMcV_get_method(metaclass, name_str, name_len);
     OUTPUT:
         RETVAL
 
@@ -200,8 +208,12 @@ add_method(metaclass, name, code)
     SV* metaclass;
     SV* name;
     SV* code;
+    PREINIT:
+        const char* name_str;
+        STRLEN name_len;    
     PPCODE:
-        MopMcV_add_method(metaclass, name, code);
+        name_str = SvPV(name, name_len);
+        MopMcV_add_method(metaclass, name_str, name_len, code);
 
 void
 construct_instance(metaclass, repr)

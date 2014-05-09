@@ -5,7 +5,7 @@
  * Constructors
  * ***************************************************** */
 
-SV* THX_newMopMcV(pTHX_ const char* name, const U32 name_len) {
+SV* THX_newMopMcV(pTHX_ const char* name, STRLEN name_len) {
     return newMopOV(newRV_inc((SV*) gv_stashpvn(name, name_len, GV_ADD)));
 }
 
@@ -88,12 +88,12 @@ void THX_MopMcV_set_superclass(pTHX_ SV* metaclass, SV* superclass) {
 
 // methods
 
-bool THX_MopMcV_has_method(pTHX_ SV* metaclass, SV* name) {
+bool THX_MopMcV_has_method(pTHX_ SV* metaclass, const char* name, STRLEN name_len) {
     HV* stash = (HV*) SvRV(metaclass);
 
-    HE* method_gv_he = hv_fetch_ent(stash, name, 0, 0);
-    if (method_gv_he != NULL) {
-        GV* method_gv = (GV*) HeVAL(method_gv_he);
+    SV** method_gv_ptr = hv_fetch(stash, name, name_len, 0);
+    if (method_gv_ptr != NULL) {
+        GV* method_gv = (GV*) *method_gv_ptr;
         CV* method    = GvCV(method_gv);
         if (method != NULL && GvSTASH(CvGV(method)) == stash) {
             return TRUE;
@@ -103,12 +103,12 @@ bool THX_MopMcV_has_method(pTHX_ SV* metaclass, SV* name) {
     return FALSE;
 }
 
-SV* THX_MopMcV_get_method(pTHX_ SV* metaclass, SV* name) {
+SV* THX_MopMcV_get_method(pTHX_ SV* metaclass, const char* name, STRLEN name_len) {
     HV* stash = (HV*) SvRV(metaclass);
 
-    HE* method_gv_he = hv_fetch_ent(stash, name, 0, 0);
-    if (method_gv_he != NULL) {
-        GV* method_gv = (GV*) HeVAL(method_gv_he);
+    SV** method_gv_ptr = hv_fetch(stash, name, name_len, 0);
+    if (method_gv_ptr != NULL) {
+        GV* method_gv = (GV*) *method_gv_ptr;
         CV* method    = GvCV(method_gv);
         if (method != NULL && GvSTASH(CvGV(method)) == stash) {
             return newRV_inc((SV*) method);  
@@ -122,18 +122,18 @@ SV* THX_MopMcV_upgrade_method(pTHX_ SV* metaclass, SV* code) {
     return newMopMmV(code, boolSV(TRUE));
 }
 
-void THX_MopMcV_add_method(pTHX_ SV* metaclass, SV* name, SV* code) {
+void THX_MopMcV_add_method(pTHX_ SV* metaclass, const char* name, STRLEN name_len, SV* code) {
     GV* method_gv;
     HV* stash  = (HV*) SvRV(metaclass);
     SV* method = newMopMmV(code, boolSV(false));
 
-    HE* method_gv_he = hv_fetch_ent(stash, name, 0, 0);
-    if (method_gv_he != NULL) {
-        method_gv = (GV*) HeVAL(method_gv_he);
+    SV** method_gv_ptr = hv_fetch(stash, name, name_len, 0);
+    if (method_gv_ptr != NULL) {
+        method_gv = (GV*) *method_gv_ptr;
     } else {
         method_gv = (GV*) newSV(0);
-        gv_init_sv(method_gv, stash, name, 0);
-        (void)hv_store_ent(stash, name, (SV*) method_gv, 0);
+        gv_init_pvn(method_gv, stash, name, name_len, 0);
+        (void)hv_store(stash, name, name_len, (SV*) method_gv, 0);
     }
 
     MopMmV_assign_to_stash(method, method_gv, stash);

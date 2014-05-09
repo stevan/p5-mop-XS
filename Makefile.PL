@@ -10,4 +10,7 @@ WriteMakefile(
     LIBS              => [''],
     DEFINE            => '',
     INC               => '-Isrc',
+    test              => {
+        TESTS => "t/*.t t/*/*.t"
+    }
 );

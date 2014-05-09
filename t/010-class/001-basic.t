@@ -15,6 +15,13 @@ package Foo::Bar::Baz 0.01 {
     sub test { __PACKAGE__ . '::test' }
 }
 
+package Foo::Bar {
+    our $VERSION   = '0.02';
+    our $AUTHORITY = 'cpan:STEVAN';
+    our @ISA = ('Foo::Bar::Baz');
+    sub test { __PACKAGE__ . '::test' }
+}
+
 {
     my $mcv = mop::internals::newMopMcV("Foo::Bar::Baz");
 
@@ -43,35 +50,7 @@ package Foo::Bar::Baz 0.01 {
         is(mop::internals::MopMmV::associated_class($test), $mcv, '... got the right stash');
 
         is($test->(), 'Foo::Bar::Baz::test', '... got the right value calling as CODE->()');
-
-        my ($before, $after) = (0, 0);
-        mop::internals::MopOV::bind_event($test, 'before:EXECUTE', sub { $before++ });
-        mop::internals::MopOV::bind_event($test, 'after:EXECUTE', sub { $after++ });
-
-        is($test->(), 'Foo::Bar::Baz::test', '... got the right value calling as CODE->() w/ events');
-        is($before, 1, '... our before:EXECUTE event fired');
-        is($after, 1, '... our after:EXECUTE event fired');
-
-        # call method ...
-        my $baz = mop::internals::MopMcV::construct_instance($mcv, \(my $x));
-
-        isa_ok($baz, 'Foo::Bar::Baz');
-        can_ok($baz, 'test');
-
-        is($baz->test, 'Foo::Bar::Baz::test', '... got the right value calling as $obj->test w/ events');
-        is($before, 2, '... our before:EXECUTE event fired');
-        is($after, 2, '... our after:EXECUTE event fired');
-
-        is($test->(), 'Foo::Bar::Baz::test', '... got the right value calling as CODE->() w/ events');
-        is($before, 3, '... our before:EXECUTE event fired');
-        is($after, 3, '... our after:EXECUTE event fired');
-
-        is($baz->test, 'Foo::Bar::Baz::test', '... got the right value calling as $obj->test w/ events');
-        is($before, 4, '... our before:EXECUTE event fired');
-        is($after, 4, '... our after:EXECUTE event fired');
     }
-
-
 
     is(mop::internals::MopMcV::get_method($mcv, 'fail'), undef, '... nothing back from getting the &fail method');
 
@@ -98,12 +77,7 @@ package Foo::Bar::Baz 0.01 {
     is($baz->testing, 'Foo::Bar::Baz::testing', '... got the right value');
 }
 
-package Foo::Bar {
-    our $VERSION   = '0.02';
-    our $AUTHORITY = 'cpan:STEVAN';
-    our @ISA = ('Foo::Bar::Baz');
-    sub test { __PACKAGE__ . '::test' }
-}
+# test inheritance
 
 {
     my $mcv = mop::internals::newMopMcV("Foo::Bar");
@@ -182,26 +156,6 @@ package Foo::Bar {
     is(mop::internals::MopMcV::authority($mcv), 'cpan:STEVAN', '... got the right authority');
 }
 
-package My::ImportTest {
-    use Data::Dumper qw[ Dumper ];
-    sub test { __PACKAGE__ . '::test' }
-}
-
-{
-    my $mcv = mop::internals::newMopMcV("My::ImportTest");
-
-    ok(mop::internals::MopMcV::has_method($mcv, 'test'), '... we have the &test method');
-    ok(!mop::internals::MopMcV::has_method($mcv, 'Dumper'), '... we do not have the imported &Dumper function');
-
-    {
-        my $test = mop::internals::MopMcV::get_method($mcv, 'test');
-        is(ref($test), 'CODE', '... got a code ref');
-
-        is($test->(), 'My::ImportTest::test', '... got the right value');
-    }
-
-    is(mop::internals::MopMcV::get_method($mcv, 'Dumper'), undef, '... nothing back from getting the &Dumper function');
-}
 
 
 done_testing;

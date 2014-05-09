@@ -23,6 +23,14 @@ MODULE = mop  PACKAGE = mop::internals
 SV*
 newMopMcV(name)
     SV* name;
+    PREINIT:
+        const char* name_str;
+        STRLEN name_len;
+    CODE:
+        name_str = SvPV(name, name_len);
+        RETVAL = newMopMcV(name_str, name_len);
+    OUTPUT:
+        RETVAL
 
 SV*
 newMopMmV(code)
@@ -235,11 +243,17 @@ MODULE = mop  PACKAGE = mop::internals::util
 SV* 
 get_meta(name)
     SV* name;
+    PREINIT:
+        const char* name_str;
+        STRLEN name_len;
     CODE:
         if (SvROK(name) && SvOBJECT(SvRV(name))) {
-            name = newSVpv(sv_reftype(SvRV(name), TRUE), 0);
+            name_str = sv_reftype(SvRV(name), TRUE);
+            name_len = strlen(name_str);
+        } else {
+            name_str = SvPV(name, name_len);
         }
-        RETVAL = newMopMcV(name);
+        RETVAL = newMopMcV(name_str, name_len);
     OUTPUT:
         RETVAL
 

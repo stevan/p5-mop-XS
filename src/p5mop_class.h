@@ -8,9 +8,9 @@
  * Constructors
  * ***************************************************** */
 
-#define newMopMcV(name) THX_newMopMcV(aTHX_ name)
+#define newMopMcV(name, name_len) THX_newMopMcV(aTHX_ name, name_len)
 
-SV* THX_newMopMcV(pTHX_ SV* name);
+SV* THX_newMopMcV(pTHX_ const char* name, const U32 name_len);
 
 /* *****************************************************
  * Accessors

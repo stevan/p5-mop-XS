@@ -5,8 +5,8 @@
  * Constructors
  * ***************************************************** */
 
-SV* THX_newMopMcV(pTHX_ SV* name) {
-    return newMopOV(newRV_inc((SV*) gv_stashsv(name, GV_ADD)));
+SV* THX_newMopMcV(pTHX_ const char* name, const U32 name_len) {
+    return newMopOV(newRV_inc((SV*) gv_stashpvn(name, name_len, GV_ADD)));
 }
 
 /* *****************************************************
@@ -53,7 +53,9 @@ SV* THX_MopMcV_get_superclass(pTHX_ SV* metaclass) {
         if (isa_av != NULL) {
             SV** super = av_fetch(isa_av, 0, 0);
             if (super != NULL) {
-                return newMopMcV(*super);
+                STRLEN name_len;
+                char*  name = SvPV(*super, name_len);
+                return newMopMcV(name, name_len);
             }
         }
     }

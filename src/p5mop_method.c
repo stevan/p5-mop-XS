@@ -7,7 +7,7 @@ static void _MopMmV_wrapper (pTHX_ CV *cv);
  * Constructors
  * ***************************************************** */
 
-SV* THX_newMopMmV(pTHX_ SV* code, SV* steal_stash) {
+SV* THX_newMopMmV(pTHX_ SV* code, U32 flags) {
     SV* method;
 
     CV* cv = (CV*) newSV(0);
@@ -24,7 +24,7 @@ SV* THX_newMopMmV(pTHX_ SV* code, SV* steal_stash) {
 
     method = newMopOV(newRV_inc((SV*) cv));
 
-    if (SvOK(steal_stash)) {
+    if (flags & MopMmVf_STEAL_STASH) {
         MopMmV_assign_to_stash(method, CvGV(SvRV(code)), CvSTASH(SvRV(code)));
     }
 

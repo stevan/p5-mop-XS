@@ -37,7 +37,7 @@ newMopMmV(code)
     SV* code;
     PPCODE:
         EXTEND(SP, 1);
-        PUSHs(newMopMmV(code, boolSV(TRUE)));
+        PUSHs(newMopMmV(code, MopMmVf_STEAL_STASH));
 
 SV*
 newMopMaV(name)

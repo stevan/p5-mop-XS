@@ -5,12 +5,18 @@
 #define MOP_METHOD_H
 
 /* *****************************************************
+ * Flags
+ * ***************************************************** */
+
+#define MopMmVf_STEAL_STASH 0x01
+
+/* *****************************************************
  * Constructors
  * ***************************************************** */
 
-#define newMopMmV(code, steal_stash) THX_newMopMmV(aTHX_ code, steal_stash)
+#define newMopMmV(code, flags) THX_newMopMmV(aTHX_ code, flags)
 
-SV* THX_newMopMmV(pTHX_ SV* code, SV* steal_stash);
+SV* THX_newMopMmV(pTHX_ SV* code, U32 flags);
 
 /* *****************************************************
  * Installers

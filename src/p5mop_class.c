@@ -119,13 +119,13 @@ SV* THX_MopMcV_get_method(pTHX_ SV* metaclass, const char* name, STRLEN name_len
 }
 
 SV* THX_MopMcV_upgrade_method(pTHX_ SV* metaclass, SV* code) {
-    return newMopMmV(code, boolSV(TRUE));
+    return newMopMmV(code, MopMmVf_STEAL_STASH);
 }
 
 void THX_MopMcV_add_method(pTHX_ SV* metaclass, const char* name, STRLEN name_len, SV* code) {
     GV* method_gv;
     HV* stash  = (HV*) SvRV(metaclass);
-    SV* method = newMopMmV(code, boolSV(false));
+    SV* method = newMopMmV(code, 0);
 
     SV** method_gv_ptr = hv_fetch(stash, name, name_len, 0);
     if (method_gv_ptr != NULL) {

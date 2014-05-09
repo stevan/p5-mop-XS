@@ -70,21 +70,21 @@ void THX_freeMopOV(pTHX_ MopOV* opaque) {
  * Slot access
  * ***************************************************** */
 
-SV* THX_MopOV_get_at_slot(pTHX_ SV* rv, SV* slot_name) {
+SV* THX_MopOV_get_at_slot(pTHX_ SV* rv, const char* slot_name, STRLEN slot_name_len) {
     MopOV* opaque  = SVrv_to_MopOV(rv);
-    HE* slot_entry = hv_fetch_ent(opaque->slots, slot_name, 0, 0);
-    return slot_entry == NULL ? newSV(0) : HeVAL(slot_entry);
+    SV** slot_entry = hv_fetch(opaque->slots, slot_name, slot_name_len, 0);
+    return slot_entry == NULL ? &PL_sv_undef : *slot_entry;
 }
 
-void THX_MopOV_set_at_slot(pTHX_ SV* rv, SV* slot_name, SV* slot_value) {
+void THX_MopOV_set_at_slot(pTHX_ SV* rv, const char* slot_name, STRLEN slot_name_len, SV* slot_value) {
     MopOV* opaque = SVrv_to_MopOV(rv);
     SvREFCNT_inc(slot_value);
-    (void)hv_store_ent(opaque->slots, slot_name, slot_value, 0);
+    (void)hv_store(opaque->slots, slot_name, slot_name_len, slot_value, 0);
 }
 
-bool THX_MopOV_has_at_slot(pTHX_ SV* rv, SV* slot_name) {
+bool THX_MopOV_has_at_slot(pTHX_ SV* rv, const char* slot_name, STRLEN slot_name_len) {
     MopOV* opaque = SVrv_to_MopOV(rv);
-    return hv_exists_ent(opaque->slots, slot_name, 0);
+    return hv_exists(opaque->slots, slot_name, slot_name_len);
 }
 
 /* *****************************************************

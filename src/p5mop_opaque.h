@@ -31,13 +31,13 @@ void THX_freeMopOV(pTHX_ MopOV* opaque);
 
 // Slot access ...
 
-#define MopOV_get_at_slot(rv, slot_name) THX_MopOV_get_at_slot(aTHX_ rv, slot_name)
-#define MopOV_set_at_slot(rv, slot_name, slot_value) THX_MopOV_set_at_slot(aTHX_ rv, slot_name, slot_value)
-#define MopOV_has_at_slot(rv, slot_name) THX_MopOV_has_at_slot(aTHX_ rv, slot_name)
+#define MopOV_get_at_slot(rv, slot_name, slot_name_len) THX_MopOV_get_at_slot(aTHX_ rv, slot_name, slot_name_len)
+#define MopOV_set_at_slot(rv, slot_name, slot_name_len, slot_value) THX_MopOV_set_at_slot(aTHX_ rv, slot_name, slot_name_len, slot_value)
+#define MopOV_has_at_slot(rv, slot_name, slot_name_len) THX_MopOV_has_at_slot(aTHX_ rv, slot_name, slot_name_len)
 
-SV*  THX_MopOV_get_at_slot(pTHX_ SV* rv, SV* slot_name);
-void THX_MopOV_set_at_slot(pTHX_ SV* rv, SV* slot_name, SV* slot_value);
-bool THX_MopOV_has_at_slot(pTHX_ SV* rv, SV* slot_name);
+SV*  THX_MopOV_get_at_slot(pTHX_ SV* rv, const char* slot_name, STRLEN slot_name_len);
+void THX_MopOV_set_at_slot(pTHX_ SV* rv, const char* slot_name, STRLEN slot_name_len, SV* slot_value);
+bool THX_MopOV_has_at_slot(pTHX_ SV* rv, const char* slot_name, STRLEN slot_name_len);
 
 // Events ...
 

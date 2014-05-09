@@ -73,25 +73,37 @@ void
 get_at_slot(rv, slot_name)
     SV* rv;
     SV* slot_name;
+    PREINIT:
+        const char* name_str;
+        STRLEN name_len;    
     PPCODE:
+        name_str = SvPV(slot_name, name_len);
         EXTEND(SP, 1);
-        PUSHs(MopOV_get_at_slot(rv, slot_name));
+        PUSHs(MopOV_get_at_slot(rv, name_str, name_len));
 
 void
 set_at_slot(rv, slot_name, slot_value)
     SV* rv;
     SV* slot_name;
     SV* slot_value;
+    PREINIT:
+        const char* name_str;
+        STRLEN name_len;     
     CODE:
-        MopOV_set_at_slot(rv, slot_name, slot_value);
+        name_str = SvPV(slot_name, name_len);
+        MopOV_set_at_slot(rv, name_str, name_len, slot_value);
         XSRETURN(2);
 
-SV*
+bool
 has_at_slot(rv, slot_name)
     SV* rv;
     SV* slot_name;
+    PREINIT:
+        const char* name_str;
+        STRLEN name_len; 
     CODE:
-        RETVAL = boolSV(MopOV_has_at_slot(rv, slot_name));
+        name_str = SvPV(slot_name, name_len);
+        RETVAL = MopOV_has_at_slot(rv, name_str, name_len);
     OUTPUT:
         RETVAL
 
@@ -176,7 +188,7 @@ set_superclass(metaclass, superclass)
     PPCODE:
         MopMcV_set_superclass(metaclass, superclass);
 
-SV*
+bool
 has_method(metaclass, name)
     SV* metaclass;
     SV* name;

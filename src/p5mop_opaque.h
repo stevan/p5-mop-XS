@@ -42,14 +42,14 @@ bool THX_MopOV_has_at_slot(pTHX_ SV* rv, const char* slot_name, STRLEN slot_name
 // Events ...
 
 #define MopOV_has_events(rv) THX_MopOV_has_events(aTHX_ rv)
-#define MopOV_bind_event(rv, event_name, callback) THX_MopOV_bind_event(aTHX_ rv, event_name, callback)
-#define MopOV_unbind_event(rv, event_name, callback) THX_MopOV_unbind_event(aTHX_ rv, event_name, callback)
-#define MopOV_fire_event(rv, event_name, args, args_len) THX_MopOV_fire_event(aTHX_ rv, event_name, args, args_len)
+#define MopOV_bind_event(rv, event_name, event_name_len, callback) THX_MopOV_bind_event(aTHX_ rv, event_name, event_name_len, callback)
+#define MopOV_unbind_event(rv, event_name, event_name_len, callback) THX_MopOV_unbind_event(aTHX_ rv, event_name, event_name_len, callback)
+#define MopOV_fire_event(rv, event_name, event_name_len, args, args_len) THX_MopOV_fire_event(aTHX_ rv, event_name, event_name_len, args, args_len)
 
 SV*  THX_MopOV_has_events(pTHX_ SV* rv);
-void THX_MopOV_bind_event(pTHX_ SV* rv, SV* event_name, SV* callback);
-void THX_MopOV_unbind_event(pTHX_ SV* rv, SV* event_name, SV* callback);
-void THX_MopOV_fire_event(pTHX_ SV* rv, SV* event_name, SV** args, I32 args_len);
+void THX_MopOV_bind_event(pTHX_ SV* rv, const char* event_name, STRLEN event_name_len, SV* callback);
+void THX_MopOV_unbind_event(pTHX_ SV* rv, const char* event_name, STRLEN event_name_len, SV* callback);
+void THX_MopOV_fire_event(pTHX_ SV* rv, const char* event_name, STRLEN event_name_len, SV** args, I32 args_len);
 
 
 /* *****************************************************

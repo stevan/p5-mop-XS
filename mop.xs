@@ -120,8 +120,12 @@ bind_event(object, event_name, callback)
     SV *object;
     SV *event_name;
     SV *callback;
+    PREINIT:
+        const char* name_str;
+        STRLEN name_len;     
     CODE:
-        MopOV_bind_event(object, event_name, callback);
+        name_str = SvPV(event_name, name_len);
+        MopOV_bind_event(object, name_str, name_len, callback);
         XSRETURN(1);
 
 void
@@ -129,8 +133,12 @@ unbind_event(object, event_name, callback)
     SV *object;
     SV *event_name;
     SV *callback;
+    PREINIT:
+        const char* name_str;
+        STRLEN name_len; 
     CODE:
-        MopOV_unbind_event(object, event_name, callback);
+        name_str = SvPV(event_name, name_len);
+        MopOV_unbind_event(object, name_str, name_len, callback);
         XSRETURN(1);
 
 void
@@ -138,6 +146,8 @@ fire_event(object, event_name, ...)
     SV* object;
     SV* event_name;
     PREINIT:
+        const char* name_str;
+        STRLEN name_len; 
         I32 j;
         SV** args;
     CODE:
@@ -145,7 +155,8 @@ fire_event(object, event_name, ...)
         for (j = 0; j <= items; j++) {
             args[j] = ST(j);
         }
-        MopOV_fire_event(object, event_name, args, items);
+        name_str = SvPV(event_name, name_len);
+        MopOV_fire_event(object, name_str, name_len, args, items);
         Safefree(args);
         XSRETURN(1);
 

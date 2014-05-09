@@ -89,7 +89,7 @@ static void _MopMmV_wrapper (pTHX_ CV *cv) {
         for (j = 0; j < items; j++) {
             args[j] = ST(j);
         }
-        MopOV_fire_event(object, newSVpv("before:EXECUTE", 14), args, items-1);
+        MopOV_fire_event(object, "before:EXECUTE", 14, args, items-1);
     }
 
     {
@@ -114,7 +114,7 @@ static void _MopMmV_wrapper (pTHX_ CV *cv) {
     }
 
     if (has_events) {
-        MopOV_fire_event(object, newSVpv("after:EXECUTE", 13), args, items-1);   
+        MopOV_fire_event(object, "after:EXECUTE", 13, args, items-1);   
     }
 
     XSRETURN(av_len(results) + 1);

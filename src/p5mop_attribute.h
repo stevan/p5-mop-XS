@@ -17,8 +17,10 @@ SV* THX_newMopMaV(pTHX_ const char* name, STRLEN name_len);
  * ***************************************************** */
 
 #define MopMaV_get_name(meta_attr) THX_MopMaV_get_name(aTHX_ meta_attr)
+#define MopMaV_get_key_name(meta_attr) THX_MopMaV_get_key_name(aTHX_ meta_attr)
 
-SV*  THX_MopMaV_get_name(pTHX_ SV* meta_attr);
+SV* THX_MopMaV_get_name(pTHX_ SV* meta_attr);
+SV* THX_MopMaV_get_key_name(pTHX_ SV* meta_attr);
 
 // associated metaclass
 

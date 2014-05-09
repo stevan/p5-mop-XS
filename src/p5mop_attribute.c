@@ -20,6 +20,13 @@ SV* THX_MopMaV_get_name(pTHX_ SV* meta_attr) {
     return MopOV_get_at_slot(meta_attr, "$!name", 6);
 }
 
+SV* THX_MopMaV_get_key_name(pTHX_ SV* meta_attr) {
+    const char* name_str;
+    STRLEN name_len;
+    name_str = SvPV(MopMaV_get_name(meta_attr), name_len);
+    return newSVpv(name_str+=2, name_len-2);
+}
+
 SV* THX_MopMaV_get_associated_class(pTHX_ SV* meta_attr) {
     return MopOV_get_at_slot(meta_attr, "$!associated_meta", 17);
 }

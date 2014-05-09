@@ -276,10 +276,16 @@ MODULE = mop  PACKAGE = mop::internals::MopMaV
 SV*
 name(meta_attr)
     SV* meta_attr;
-    CODE:
-        RETVAL = MopMaV_get_name(meta_attr);
-    OUTPUT:
-        RETVAL
+    PPCODE:
+        EXTEND(SP, 1);
+        PUSHs(MopMaV_get_name(meta_attr));
+
+SV*
+key_name(meta_attr)
+    SV* meta_attr;
+    PPCODE:
+        EXTEND(SP, 1);
+        PUSHs(MopMaV_get_key_name(meta_attr));
 
 MODULE = mop  PACKAGE = mop::internals::util
 

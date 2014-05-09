@@ -4,14 +4,15 @@
 #define ATTR_NAME_SLOT newSVpv("$!name", 6)
 #define ASSOC_META_NAME_SLOT newSVpv("$!associated_meta", 6)
 
+;
+
 /* *****************************************************
  * Constructors
  * ***************************************************** */
 
-SV* THX_newMopMaV(pTHX_ SV* name) {
+SV* THX_newMopMaV(pTHX_ const char* name, STRLEN name_len) {
     SV* meta_attr = newMopOVsv();
-    SvREFCNT_inc(name);
-    MopOV_set_at_slot(meta_attr, ATTR_NAME_SLOT, name);
+    MopOV_set_at_slot(meta_attr, ATTR_NAME_SLOT, newSVpv(name, name_len));
     return meta_attr;
 }
 

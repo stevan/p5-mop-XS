@@ -42,6 +42,14 @@ newMopMmV(code)
 SV*
 newMopMaV(name)
     SV* name;
+    PREINIT:
+        const char* name_str;
+        STRLEN name_len;
+    CODE:
+        name_str = SvPV(name, name_len);
+        RETVAL = newMopMaV(name_str, name_len);
+    OUTPUT:
+        RETVAL
 
 void
 newMopOV(rv)

@@ -4,7 +4,7 @@
  * predeclare some internal functions
  * ***************************************************** */
 
-static AV* fetch_events_by_name (HV* callbacks, const char* event_name, STRLEN event_name_len);
+static AV* fetch_events_by_name (HV* callbacks, SV* event_name);
 static I32* new_uuid();
 
 // magic destructor ...
@@ -70,21 +70,21 @@ void THX_freeMopOV(pTHX_ MopOV* opaque) {
  * Slot access
  * ***************************************************** */
 
-SV* THX_MopOV_get_at_slot(pTHX_ SV* rv, const char* slot_name, STRLEN slot_name_len) {
+SV* THX_MopOV_get_at_slot(pTHX_ SV* rv, SV* slot_name) {
     MopOV* opaque  = SVrv_to_MopOV(rv);
-    SV** slot_entry = hv_fetch(opaque->slots, slot_name, slot_name_len, 0);
-    return slot_entry == NULL ? &PL_sv_undef : *slot_entry;
+    HE* slot_entry = hv_fetch_ent(opaque->slots, slot_name, 0, 0);
+    return slot_entry == NULL ? &PL_sv_undef : HeVAL(slot_entry);
 }
 
-void THX_MopOV_set_at_slot(pTHX_ SV* rv, const char* slot_name, STRLEN slot_name_len, SV* slot_value) {
+void THX_MopOV_set_at_slot(pTHX_ SV* rv, SV* slot_name, SV* slot_value) {
     MopOV* opaque = SVrv_to_MopOV(rv);
     SvREFCNT_inc(slot_value);
-    (void)hv_store(opaque->slots, slot_name, slot_name_len, slot_value, 0);
+    (void)hv_store_ent(opaque->slots, slot_name, slot_value, 0);
 }
 
-bool THX_MopOV_has_at_slot(pTHX_ SV* rv, const char* slot_name, STRLEN slot_name_len) {
+bool THX_MopOV_has_at_slot(pTHX_ SV* rv, SV* slot_name) {
     MopOV* opaque = SVrv_to_MopOV(rv);
-    return hv_exists(opaque->slots, slot_name, slot_name_len);
+    return hv_exists_ent(opaque->slots, slot_name, 0);
 }
 
 /* *****************************************************
@@ -96,7 +96,7 @@ SV* THX_MopOV_has_events(pTHX_ SV* rv) {
     return newSViv(HvKEYS(opaque->callbacks));
 }
 
-void THX_MopOV_bind_event(pTHX_ SV* rv, const char* event_name, STRLEN event_name_len, SV* callback) {
+void THX_MopOV_bind_event(pTHX_ SV* rv, SV* event_name, SV* callback) {
 
     if (SvTYPE(callback) != SVt_RV || SvTYPE(SvRV(callback)) != SVt_PVCV) {
         croak("callback is not a CODE reference");
@@ -106,17 +106,17 @@ void THX_MopOV_bind_event(pTHX_ SV* rv, const char* event_name, STRLEN event_nam
     AV* events;
 
     opaque = SVrv_to_MopOV(rv);
-    events = fetch_events_by_name(opaque->callbacks, event_name, event_name_len);
+    events = fetch_events_by_name(opaque->callbacks, event_name);
 
     if (events == NULL) {
         events = newAV();
-        (void)hv_store(opaque->callbacks, event_name, event_name_len, newRV_noinc((SV*) events), 0);
+        (void)hv_store_ent(opaque->callbacks, event_name, newRV_noinc((SV*) events), 0);
     }
 
     av_push(events, SvREFCNT_inc(callback));
 }
 
-void THX_MopOV_unbind_event(pTHX_ SV* rv, const char* event_name, STRLEN event_name_len, SV* callback) {
+void THX_MopOV_unbind_event(pTHX_ SV* rv, SV* event_name, SV* callback) {
 
     if (SvTYPE(callback) != SVt_RV || SvTYPE(SvRV(callback)) != SVt_PVCV) {
         croak("callback is not a CODE reference");
@@ -126,7 +126,7 @@ void THX_MopOV_unbind_event(pTHX_ SV* rv, const char* event_name, STRLEN event_n
     AV* events;
 
     opaque = SVrv_to_MopOV(rv);
-    events = fetch_events_by_name(opaque->callbacks, event_name, event_name_len);
+    events = fetch_events_by_name(opaque->callbacks, event_name);
 
     if (events != NULL) {
 
@@ -151,23 +151,23 @@ void THX_MopOV_unbind_event(pTHX_ SV* rv, const char* event_name, STRLEN event_n
         }
 
         if (event_array_length != -1) {
-            (void)hv_delete(opaque->callbacks, event_name, event_name_len, G_DISCARD);
+            (void)hv_delete_ent(opaque->callbacks, event_name, G_DISCARD, 0);
             if (av_top_index(new_events) == -1) {
                 av_undef(new_events);
             } else {
-                (void)hv_store(opaque->callbacks, event_name, event_name_len, newRV_noinc((SV*) new_events), 0);
+                (void)hv_store_ent(opaque->callbacks, event_name, newRV_noinc((SV*) new_events), 0);
             }
         }
 
     }
 }
 
-void THX_MopOV_fire_event(pTHX_ SV* rv, const char* event_name, STRLEN event_name_len, SV** args, I32 args_len) {
+void THX_MopOV_fire_event(pTHX_ SV* rv, SV* event_name, SV** args, I32 args_len) {
     MopOV* opaque;
     AV* events;
 
     opaque = SVrv_to_MopOV(rv);
-    events = fetch_events_by_name(opaque->callbacks, event_name, event_name_len);
+    events = fetch_events_by_name(opaque->callbacks, event_name);
 
     if (events != NULL) {
 
@@ -262,13 +262,12 @@ static int mg_freeMopOV(pTHX_ SV *sv, MAGIC *mg) {
 }
 
 // find/create the events array in the callbacks HV
-static AV* fetch_events_by_name (HV* callbacks, const char* event_name, STRLEN event_name_len) {
+static AV* fetch_events_by_name (HV* callbacks, SV* event_name) {
     AV* events;
 
-    SV** events_ptr = hv_fetch(callbacks, event_name, event_name_len, 0);
-    if (events_ptr != NULL) {
-        assert(SvROK(*events_ptr));
-        events = (AV*) SvRV(*events_ptr);
+    HE* events_he = hv_fetch_ent(callbacks, event_name, 0, 0);
+    if (events_he != NULL) {
+        events = (AV*) SvRV(HeVAL(events_he));
         if (SvTYPE(events) != SVt_PVAV) {
             croak("events is not an arrayref");
         }

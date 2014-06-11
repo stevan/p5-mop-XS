@@ -8,9 +8,9 @@
  * Constructors
  * ***************************************************** */
 
-#define newMopMcV(name, name_len) THX_newMopMcV(aTHX_ name, name_len)
+#define newMopMcV(name) THX_newMopMcV(aTHX_ name)
 
-SV* THX_newMopMcV(pTHX_ const char* name, STRLEN name_len);
+SV* THX_newMopMcV(pTHX_ SV* name);
 
 /* *****************************************************
  * Accessors
@@ -34,15 +34,15 @@ void THX_MopMcV_set_superclass(pTHX_ SV* metaclass, SV* superclass);
 
 // methods
 
-#define MopMcV_has_method(metaclass, name, name_len) THX_MopMcV_has_method(aTHX_ metaclass, name, name_len)
-#define MopMcV_get_method(metaclass, name, name_len) THX_MopMcV_get_method(aTHX_ metaclass, name, name_len)
+#define MopMcV_has_method(metaclass, name) THX_MopMcV_has_method(aTHX_ metaclass, name)
+#define MopMcV_get_method(metaclass, name) THX_MopMcV_get_method(aTHX_ metaclass, name)
 #define MopMcV_upgrade_method(metaclass, code) THX_MopMcV_upgrade_method(aTHX_ metaclass, code)
-#define MopMcV_add_method(metaclass, name, name_len, code) THX_MopMcV_add_method(aTHX_ metaclass, name, name_len, code)
+#define MopMcV_add_method(metaclass, name, code) THX_MopMcV_add_method(aTHX_ metaclass, name, code)
 
-bool THX_MopMcV_has_method(pTHX_ SV* metaclass, const char* name, STRLEN name_len);
-SV*  THX_MopMcV_get_method(pTHX_ SV* metaclass, const char* name, STRLEN name_len);
+bool THX_MopMcV_has_method(pTHX_ SV* metaclass, SV* name);
+SV*  THX_MopMcV_get_method(pTHX_ SV* metaclass, SV* name);
 SV*  THX_MopMcV_upgrade_method(pTHX_ SV* metaclass, SV* code);
-void THX_MopMcV_add_method(pTHX_ SV* metaclass, const char* name, STRLEN name_len, SV* code);
+void THX_MopMcV_add_method(pTHX_ SV* metaclass, SV* name, SV* code);
 
 /* *****************************************************
  * Methods

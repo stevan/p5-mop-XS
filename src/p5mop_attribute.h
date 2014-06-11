@@ -4,13 +4,16 @@
 #ifndef MOP_ATTR_H
 #define MOP_ATTR_H
 
+#define ATTR_NAME_SLOT       newSVpv("$!name", 6)
+#define ASSOC_META_NAME_SLOT newSVpv("$!associated_meta", 6)
+
 /* *****************************************************
  * Constructors
  * ***************************************************** */
 
-#define newMopMaV(name, name_len) THX_newMopMaV(aTHX_ name, name_len)
+#define newMopMaV(name) THX_newMopMaV(aTHX_ name)
 
-SV* THX_newMopMaV(pTHX_ const char* name, STRLEN name_len);
+SV* THX_newMopMaV(pTHX_ SV* name);
 
 /* *****************************************************
  * Accessors

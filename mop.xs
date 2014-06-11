@@ -23,14 +23,6 @@ MODULE = mop  PACKAGE = mop::internals
 SV*
 newMopMcV(name)
     SV* name;
-    PREINIT:
-        const char* name_str;
-        STRLEN name_len;
-    CODE:
-        name_str = SvPV(name, name_len);
-        RETVAL = newMopMcV(name_str, name_len);
-    OUTPUT:
-        RETVAL
 
 SV*
 newMopMmV(code)
@@ -42,14 +34,6 @@ newMopMmV(code)
 SV*
 newMopMaV(name)
     SV* name;
-    PREINIT:
-        const char* name_str;
-        STRLEN name_len;
-    CODE:
-        name_str = SvPV(name, name_len);
-        RETVAL = newMopMaV(name_str, name_len);
-    OUTPUT:
-        RETVAL
 
 void
 newMopOV(rv)
@@ -73,37 +57,25 @@ void
 get_at_slot(rv, slot_name)
     SV* rv;
     SV* slot_name;
-    PREINIT:
-        const char* name_str;
-        STRLEN name_len;    
     PPCODE:
-        name_str = SvPV(slot_name, name_len);
         EXTEND(SP, 1);
-        PUSHs(MopOV_get_at_slot(rv, name_str, name_len));
+        PUSHs(MopOV_get_at_slot(rv, slot_name));
 
 void
 set_at_slot(rv, slot_name, slot_value)
     SV* rv;
     SV* slot_name;
     SV* slot_value;
-    PREINIT:
-        const char* name_str;
-        STRLEN name_len;     
     CODE:
-        name_str = SvPV(slot_name, name_len);
-        MopOV_set_at_slot(rv, name_str, name_len, slot_value);
+        MopOV_set_at_slot(rv, slot_name, slot_value);
         XSRETURN(2);
 
 bool
 has_at_slot(rv, slot_name)
     SV* rv;
     SV* slot_name;
-    PREINIT:
-        const char* name_str;
-        STRLEN name_len; 
     CODE:
-        name_str = SvPV(slot_name, name_len);
-        RETVAL = MopOV_has_at_slot(rv, name_str, name_len);
+        RETVAL = MopOV_has_at_slot(rv, slot_name);
     OUTPUT:
         RETVAL
 
@@ -119,13 +91,9 @@ void
 bind_event(object, event_name, callback)
     SV *object;
     SV *event_name;
-    SV *callback;
-    PREINIT:
-        const char* name_str;
-        STRLEN name_len;     
+    SV *callback;     
     CODE:
-        name_str = SvPV(event_name, name_len);
-        MopOV_bind_event(object, name_str, name_len, callback);
+        MopOV_bind_event(object, event_name, callback);
         XSRETURN(1);
 
 void
@@ -133,12 +101,8 @@ unbind_event(object, event_name, callback)
     SV *object;
     SV *event_name;
     SV *callback;
-    PREINIT:
-        const char* name_str;
-        STRLEN name_len; 
     CODE:
-        name_str = SvPV(event_name, name_len);
-        MopOV_unbind_event(object, name_str, name_len, callback);
+        MopOV_unbind_event(object, event_name, callback);
         XSRETURN(1);
 
 void
@@ -146,8 +110,6 @@ fire_event(object, event_name, ...)
     SV* object;
     SV* event_name;
     PREINIT:
-        const char* name_str;
-        STRLEN name_len; 
         I32 j;
         SV** args;
     CODE:
@@ -155,8 +117,7 @@ fire_event(object, event_name, ...)
         for (j = 0; j <= items; j++) {
             args[j] = ST(j);
         }
-        name_str = SvPV(event_name, name_len);
-        MopOV_fire_event(object, name_str, name_len, args, items);
+        MopOV_fire_event(object, event_name, args, items);
         Safefree(args);
         XSRETURN(1);
 
@@ -203,12 +164,8 @@ bool
 has_method(metaclass, name)
     SV* metaclass;
     SV* name;
-    PREINIT:
-        const char* name_str;
-        STRLEN name_len;
     CODE:
-        name_str = SvPV(name, name_len);
-        RETVAL = MopMcV_has_method(metaclass, name_str, name_len);
+        RETVAL = MopMcV_has_method(metaclass, name);
     OUTPUT:
         RETVAL
 
@@ -216,12 +173,8 @@ SV*
 get_method(metaclass, name)
     SV* metaclass;
     SV* name;
-    PREINIT:
-        const char* name_str;
-        STRLEN name_len;
     CODE:
-        name_str = SvPV(name, name_len);
-        RETVAL = MopMcV_get_method(metaclass, name_str, name_len);
+        RETVAL = MopMcV_get_method(metaclass, name);
     OUTPUT:
         RETVAL
 
@@ -239,12 +192,8 @@ add_method(metaclass, name, code)
     SV* metaclass;
     SV* name;
     SV* code;
-    PREINIT:
-        const char* name_str;
-        STRLEN name_len;    
     PPCODE:
-        name_str = SvPV(name, name_len);
-        MopMcV_add_method(metaclass, name_str, name_len, code);
+        MopMcV_add_method(metaclass, name, code);
 
 void
 construct_instance(metaclass, repr)
@@ -292,17 +241,11 @@ MODULE = mop  PACKAGE = mop::internals::util
 SV* 
 get_meta(name)
     SV* name;
-    PREINIT:
-        const char* name_str;
-        STRLEN name_len;
     CODE:
         if (SvROK(name) && SvOBJECT(SvRV(name))) {
-            name_str = sv_reftype(SvRV(name), TRUE);
-            name_len = strlen(name_str);
-        } else {
-            name_str = SvPV(name, name_len);
+            name = newSVpv(sv_reftype(SvRV(name), TRUE), 0);
         }
-        RETVAL = newMopMcV(name_str, name_len);
+        RETVAL = newMopMcV(name);
     OUTPUT:
         RETVAL
 

@@ -22,11 +22,16 @@ SV* THX_MopMaV_get_name(pTHX_ SV* meta_attr) {
 }
 
 SV* THX_MopMaV_get_key_name(pTHX_ SV* meta_attr) {
-    // FIXME - so not UTF-8 safe!
+    // FIXME - This is soooooo not UTF-8 safe!!
     const char* name_str;
-    STRLEN name_len;
-    name_str = SvPV(MopMaV_get_name(meta_attr), name_len);
-    return newSVpv(name_str+=2, name_len-2);
+    STRLEN      name_len;
+    SV*         name;
+    name = MopMaV_get_name(meta_attr);
+    if (name != NULL) {
+        name_str = SvPV(name, name_len);
+        return newSVpv(name_str+=2, name_len-2);
+    }
+    return NULL;
 }
 
 SV* THX_MopMaV_get_associated_class(pTHX_ SV* meta_attr) {

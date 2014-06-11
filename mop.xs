@@ -57,9 +57,12 @@ void
 get_at_slot(rv, slot_name)
     SV* rv;
     SV* slot_name;
+    PREINIT:
+        SV* slot_value;
     PPCODE:
+        slot_value = MopOV_get_at_slot(rv, slot_name);
         EXTEND(SP, 1);
-        PUSHs(MopOV_get_at_slot(rv, slot_name));
+        PUSHs(slot_value == NULL ? &PL_sv_undef : slot_value);
 
 void
 set_at_slot(rv, slot_name, slot_value)
@@ -225,16 +228,22 @@ MODULE = mop  PACKAGE = mop::internals::MopMaV
 SV*
 name(meta_attr)
     SV* meta_attr;
+    PREINIT:
+        SV* name;
     PPCODE:
+        name = MopMaV_get_name(meta_attr);
         EXTEND(SP, 1);
-        PUSHs(MopMaV_get_name(meta_attr));
+        PUSHs(name == NULL ? &PL_sv_undef : name);
 
 SV*
 key_name(meta_attr)
     SV* meta_attr;
+    PREINIT:
+        SV* key_name;
     PPCODE:
+        key_name = MopMaV_get_key_name(meta_attr);
         EXTEND(SP, 1);
-        PUSHs(MopMaV_get_key_name(meta_attr));
+        PUSHs(key_name == NULL ? &PL_sv_undef : key_name);
 
 MODULE = mop  PACKAGE = mop::internals::util
 

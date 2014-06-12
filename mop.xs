@@ -284,12 +284,45 @@ key_name(meta_attr)
         EXTEND(SP, 1);
         PUSHs(key_name == NULL ? &PL_sv_undef : key_name);
 
+# associated class
+
 void
 associated_class(meta_attr)
     SV* meta_attr;
     PPCODE:
         EXTEND(SP, 1);
         PUSHs(MopMaV_get_associated_class(meta_attr));
+
+# defaults generators
+
+bool
+has_default_generator(meta_attr)
+    SV* meta_attr;
+    CODE:
+        RETVAL = MopMaV_has_default_generator(meta_attr);
+    OUTPUT:
+        RETVAL
+
+SV*
+get_default_generator(meta_attr)
+    SV* meta_attr;
+    PPCODE:
+        EXTEND(SP, 1);
+        PUSHs(MopMaV_get_default_generator(meta_attr));
+
+void
+set_default_generator(meta_attr, generator)
+    SV* meta_attr;
+    SV* generator;
+    PPCODE:
+        MopMaV_set_default_generator(meta_attr, generator);
+
+void 
+clear_default_generator(meta_attr)
+    SV* meta_attr;
+    PPCODE:
+        MopMaV_clear_default_generator(meta_attr);
+
 
 MODULE = mop  PACKAGE = mop::internals::util
 

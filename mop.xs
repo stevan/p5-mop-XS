@@ -163,6 +163,35 @@ set_superclass(metaclass, superclass)
     PPCODE:
         MopMcV_set_superclass(metaclass, superclass);
 
+# attributes ...
+
+bool
+has_attribute(metaclass, name)
+    SV* metaclass;
+    SV* name;
+    CODE:
+        RETVAL = MopMcV_has_attribute(metaclass, name);
+    OUTPUT:
+        RETVAL
+
+SV*
+get_attribute(metaclass, name)
+    SV* metaclass;
+    SV* name;
+    PPCODE:
+        EXTEND(SP, 1);
+        PUSHs(MopMcV_get_attribute(metaclass, name));
+
+void
+add_attribute(metaclass, attribute)
+    SV* metaclass;
+    SV* attribute;
+    PPCODE:
+        SvREFCNT_inc(attribute);
+        MopMcV_add_attribute(metaclass, attribute);
+
+# methods ...
+
 bool
 has_method(metaclass, name)
     SV* metaclass;
@@ -197,6 +226,8 @@ add_method(metaclass, name, code)
     SV* code;
     PPCODE:
         MopMcV_add_method(metaclass, name, code);
+
+# instances ....
 
 void
 construct_instance(metaclass, repr)

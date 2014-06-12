@@ -4,6 +4,8 @@
 #ifndef MOP_CLASS_H
 #define MOP_CLASS_H
 
+#define CLASS_ATTRIBUTE_SLOT newSVpv("$!attributes", 12)
+
 /* *****************************************************
  * Constructors
  * ***************************************************** */
@@ -31,6 +33,16 @@ SV* THX_MopMcV_get_authority(pTHX_ SV* metaclass);
 
 SV*  THX_MopMcV_get_superclass(pTHX_ SV* metaclass);
 void THX_MopMcV_set_superclass(pTHX_ SV* metaclass, SV* superclass);
+
+// attributes
+
+#define MopMcV_has_attribute(metaclass, name) THX_MopMcV_has_attribute(aTHX_ metaclass, name)
+#define MopMcV_get_attribute(metaclass, name) THX_MopMcV_get_attribute(aTHX_ metaclass, name)
+#define MopMcV_add_attribute(metaclass, attribute) THX_MopMcV_add_attribute(aTHX_ metaclass, attribute)
+
+bool THX_MopMcV_has_attribute(pTHX_ SV* metaclass, SV* name);
+SV*  THX_MopMcV_get_attribute(pTHX_ SV* metaclass, SV* name);
+void THX_MopMcV_add_attribute(pTHX_ SV* metaclass, SV* attribute);
 
 // methods
 

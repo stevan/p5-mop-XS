@@ -84,6 +84,72 @@ void THX_MopMcV_set_superclass(pTHX_ SV* metaclass, SV* superclass) {
     (void)av_store(isa_av, 0, MopMcV_get_name(superclass));
 }
 
+// attributes
+
+bool THX_MopMcV_has_attribute(pTHX_ SV* metaclass, SV* name) {
+    SV* attributes = MopOV_get_at_slot(metaclass, CLASS_ATTRIBUTE_SLOT);
+    if (attributes == NULL) {
+        attributes = newRV_noinc((SV*) newHV());                    
+        MopOV_set_at_slot(metaclass, CLASS_ATTRIBUTE_SLOT, attributes); 
+        // NOTE:
+        // I know I am not going to 
+        // have the value since I 
+        // only just now created the
+        // HV to store it.
+        return FALSE;
+    }
+
+    if (SvTYPE(attributes) != SVt_RV && SvTYPE(SvRV(attributes)) != SVt_PVHV) {
+        croak("attributes is not a HASH ref, this is wrong");
+    }
+
+    return hv_exists_ent((HV*) SvRV(attributes), name, 0);
+}
+
+SV* THX_MopMcV_get_attribute(pTHX_ SV* metaclass, SV* name) {
+    HE* attribute;
+
+    SV* attributes = MopOV_get_at_slot(metaclass, CLASS_ATTRIBUTE_SLOT);
+    if (attributes == NULL) {
+        attributes = newRV_noinc((SV*) newHV());                    
+        MopOV_set_at_slot(metaclass, CLASS_ATTRIBUTE_SLOT, attributes); 
+        // NOTE:
+        // I know I am not going to 
+        // have the value since I 
+        // only just now created the
+        // HV to store it.
+        return NULL;
+    }
+
+    if (SvTYPE(attributes) != SVt_RV && SvTYPE(SvRV(attributes)) != SVt_PVHV) {
+        croak("attributes is not a HASH ref, this is wrong");
+    }
+
+    attribute = hv_fetch_ent((HV*) SvRV(attributes), name, 0, 0);
+    return attribute == NULL ? NULL : HeVAL(attribute);
+}
+
+void THX_MopMcV_add_attribute(pTHX_ SV* metaclass, SV* attribute) {
+    SV* attr_name;
+
+    SV* attributes = MopOV_get_at_slot(metaclass, CLASS_ATTRIBUTE_SLOT);
+    if (attributes == NULL) {
+        attributes = newRV_noinc((SV*) newHV());                    
+        MopOV_set_at_slot(metaclass, CLASS_ATTRIBUTE_SLOT, attributes); 
+    }
+
+    if (SvTYPE(attributes) != SVt_RV && SvTYPE(SvRV(attributes)) != SVt_PVHV) {
+        croak("attributes is not a HASH ref, this is wrong");
+    }
+
+    attr_name = MopMaV_get_name(attribute);
+    if (attr_name == NULL) {
+        croak("The attribute has no name, this is wrong!");
+    }
+
+    (void)hv_store_ent((HV*) SvRV(attributes), attr_name, attribute, 0);
+}
+
 // methods
 
 bool THX_MopMcV_has_method(pTHX_ SV* metaclass, SV* name) {

@@ -5,7 +5,7 @@
 #define MOP_ATTR_H
 
 #define ATTR_NAME_SLOT       newSVpv("$!name", 6)
-#define ASSOC_META_NAME_SLOT newSVpv("$!associated_meta", 6)
+#define ATTR_ASSOC_META_SLOT newSVpv("$!associated_meta", 17)
 
 /* *****************************************************
  * Constructors

@@ -35,14 +35,14 @@ SV* THX_MopMaV_get_key_name(pTHX_ SV* meta_attr) {
 }
 
 SV* THX_MopMaV_get_associated_class(pTHX_ SV* meta_attr) {
-    return MopOV_get_at_slot(meta_attr, ASSOC_META_NAME_SLOT);
+    return MopOV_get_at_slot(meta_attr, ATTR_ASSOC_META_SLOT);
 }
 
 void THX_MopMaV_set_associated_class(pTHX_ SV* meta_attr, SV* metaclass) {
     // we actually want this to be 
     // weak, so we don't inc the 
     // ref count here. - SL
-    MopOV_set_at_slot(meta_attr, ASSOC_META_NAME_SLOT, metaclass);
+    MopOV_set_at_slot(meta_attr, ATTR_ASSOC_META_SLOT, metaclass);
 }
 
 /* *****************************************************

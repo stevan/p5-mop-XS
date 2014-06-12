@@ -87,6 +87,11 @@ bool THX_MopOV_has_at_slot(pTHX_ SV* rv, SV* slot_name) {
     return hv_exists_ent(opaque->slots, slot_name, 0);
 }
 
+void THX_MopOV_clear_at_slot(pTHX_ SV* rv, SV* slot_name) {
+    MopOV* opaque = SVrv_to_MopOV(rv);
+    (void)hv_delete_ent(opaque->slots, slot_name, G_DISCARD, 0);    
+}
+
 /* *****************************************************
  * Slot access
  * ***************************************************** */

@@ -53,6 +53,10 @@ BEGIN {
 
     mop::internals::MopOV::fire_event($o, 'test' => ($o));
     is(mop::internals::MopOV::get_at_slot($o, "test"), 1, '... test event was not fired again');
+
+    ok(mop::internals::MopOV::has_at_slot($o, "test"), '... no longer have a value at slot "test"');
+    mop::internals::MopOV::clear_at_slot($o, "test");
+    ok(!mop::internals::MopOV::has_at_slot($o, "test"), '... no longer have a value at slot "test"');
 }
 
 {

@@ -34,10 +34,12 @@ void THX_freeMopOV(pTHX_ MopOV* opaque);
 #define MopOV_get_at_slot(rv, slot_name) THX_MopOV_get_at_slot(aTHX_ rv, slot_name)
 #define MopOV_set_at_slot(rv, slot_name, slot_value) THX_MopOV_set_at_slot(aTHX_ rv, slot_name, slot_value)
 #define MopOV_has_at_slot(rv, slot_name) THX_MopOV_has_at_slot(aTHX_ rv, slot_name)
+#define MopOV_clear_at_slot(rv, slot_name) THX_MopOV_clear_at_slot(aTHX_ rv, slot_name)
 
 SV*  THX_MopOV_get_at_slot(pTHX_ SV* rv, SV* slot_name);
 void THX_MopOV_set_at_slot(pTHX_ SV* rv, SV* slot_name, SV* slot_value);
 bool THX_MopOV_has_at_slot(pTHX_ SV* rv, SV* slot_name);
+void THX_MopOV_clear_at_slot(pTHX_ SV* rv, SV* slot_name);
 
 // Events ...
 

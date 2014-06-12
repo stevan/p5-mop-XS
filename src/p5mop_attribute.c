@@ -16,7 +16,6 @@ SV* THX_newMopMaV(pTHX_ SV* name) {
  * Accessors
  * ***************************************************** */
 
-
 SV* THX_MopMaV_get_name(pTHX_ SV* meta_attr) {
     return MopOV_get_at_slot(meta_attr, ATTR_NAME_SLOT);
 }

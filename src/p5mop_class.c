@@ -13,11 +13,9 @@ SV* THX_newMopMcV(pTHX_ SV* name) {
  * Accessors
  * ***************************************************** */
 
-
 SV* THX_MopMcV_get_name(pTHX_ SV* metaclass) {
     return newSVpv(HvNAME(SvRV(metaclass)), 0);
 }
-
 
 SV* THX_MopMcV_get_version(pTHX_ SV* metaclass) {
     HV* stash = (HV*) SvRV(metaclass);
@@ -29,7 +27,6 @@ SV* THX_MopMcV_get_version(pTHX_ SV* metaclass) {
         return NULL;
     }
 }
-
 
 SV* THX_MopMcV_get_authority(pTHX_ SV* metaclass) {
     HV* stash = (HV*) SvRV(metaclass);
@@ -212,6 +209,12 @@ void THX_MopMcV_add_method(pTHX_ SV* metaclass, SV* name, SV* code) {
  * ***************************************************** */
 
 SV* THX_MopMcV_construct_instance(pTHX_ SV* metaclass, SV* repr) {
+    // TODO:
+    // This should handle all the attributes
+    // and constructing things properly, which
+    // should also include running all BUILD
+    // methods.
+    // - SL
     return sv_bless(repr, (HV*) SvRV(metaclass));
 }
 

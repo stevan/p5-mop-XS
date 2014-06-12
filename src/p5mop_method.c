@@ -88,6 +88,10 @@ static void _MopMmV_wrapper (pTHX_ CV *cv) {
     has_events = MopOV_has_events(object);
     body       = (CV*) CvXSUBANY(cv).any_uv;
 
+    if (SvTYPE(body) != SVt_PVCV) {
+        croak("body is not a code ref");
+    }
+
     if (has_events) {
         Newx(args, items, SV*);
         for (j = 0; j < items; j++) {

@@ -61,7 +61,18 @@ SV* THX_MopMmV_get_associated_class(pTHX_ SV* metamethod) {
 }
 
 /* *****************************************************
- * Accessors
+ * Method wrapper to handle events 
+ * ***************************************************** 
+ * So this is (hopefully) doing a lot more then it 
+ * actually needs to. In particular all the messing 
+ * around with the stack and storing it in the 
+ * temporary results array, etc. I suspect too that 
+ * the args fiddling with before/after:EXECUTE are 
+ * not efficient either, though creating the SVpv 
+ * for the calls to fire_event seemed insignificant
+ * when I benchmarked. Either way, need someone with 
+ * a lot more knowledge of Perl's calling conventions
+ * to take a look at this and sanity check it.
  * ***************************************************** */
 
 static void _MopMmV_wrapper (pTHX_ CV *cv) {

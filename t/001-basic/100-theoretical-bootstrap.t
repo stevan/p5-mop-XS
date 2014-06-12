@@ -42,6 +42,10 @@ $class->add_method('authority' => \&mop::internals::MopMcV::authority);
 $class->add_method('has_method' => \&mop::internals::MopMcV::has_method);
 $class->add_method('get_method' => \&mop::internals::MopMcV::get_method);
 
+$class->add_method('has_attribute' => \&mop::internals::MopMcV::has_attribute);
+$class->add_method('get_attribute' => \&mop::internals::MopMcV::get_attribute);
+$class->add_method('add_attribute' => \&mop::internals::MopMcV::add_attribute);
+
 $class->add_method('construct_instance' => \&mop::internals::MopMcV::construct_instance);
 
 isa_ok($class, 'test::mop::class');
@@ -51,13 +55,17 @@ is($class->name, 'test::mop::class', '... got the correct name');
 is($class->version, '0.01', '... got the correct version');
 is($class->authority, 'cpan:STEVAN', '... got the correct authority');
 
-ok($class->has_method('name'), '... has_method works');
-ok($class->has_method('version'), '... has_method works');
-ok($class->has_method('authority'), '... has_method works');
+ok($class->has_method('name'), '... name works');
+ok($class->has_method('version'), '... version works');
+ok($class->has_method('authority'), '... authority works');
 
 ok($class->has_method('has_method'), '... has_method works');
-ok($class->has_method('get_method'), '... has_method works');
-ok($class->has_method('add_method'), '... has_method works');
+ok($class->has_method('get_method'), '... get_method works');
+ok($class->has_method('add_method'), '... add_method works');
+
+ok($class->has_method('has_attribute'), '... has_attribute works');
+ok($class->has_method('get_attribute'), '... get_attribute works');
+ok($class->has_method('add_attribute'), '... add_attribute works');
 
 isa_ok($object, 'test::mop::class');
 isa_ok($object, 'test::mop::object');

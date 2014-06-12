@@ -82,6 +82,14 @@ has_at_slot(rv, slot_name)
     OUTPUT:
         RETVAL
 
+void
+clear_at_slot(rv, slot_name)
+    SV* rv;
+    SV* slot_name;
+    CODE:
+        MopOV_clear_at_slot(rv, slot_name);
+        XSRETURN(1);
+
 SV*
 has_events(object)
     SV* object;

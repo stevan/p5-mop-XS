@@ -276,6 +276,13 @@ key_name(meta_attr)
         EXTEND(SP, 1);
         PUSHs(key_name == NULL ? &PL_sv_undef : key_name);
 
+void
+associated_class(meta_attr)
+    SV* meta_attr;
+    PPCODE:
+        EXTEND(SP, 1);
+        PUSHs(MopMaV_get_associated_class(meta_attr));
+
 MODULE = mop  PACKAGE = mop::internals::util
 
 SV* 

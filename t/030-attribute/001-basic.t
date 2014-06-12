@@ -35,10 +35,13 @@ package Foo::Bar 0.01 {}
             '... we do not have the attribute yet (so we get undef)'
         );
 
+        is(mop::internals::MopMaV::associated_class($a), undef, '... no associated class yet');
 
         is(SvREFCNT($a), 1, '... the attribute still has only one reference count');
         mop::internals::MopMcV::add_attribute($mcv, $a);
         is(SvREFCNT($a), 2, '... the attribute now has two reference counts');
+
+        is(mop::internals::MopMaV::associated_class($a), $mcv, '... got associated class now');
 
         ok(mop::internals::MopMcV::has_attribute($mcv, '$!test'), '... we do have the attribute now');
         is(

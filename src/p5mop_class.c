@@ -147,7 +147,11 @@ void THX_MopMcV_add_attribute(pTHX_ SV* metaclass, SV* attribute) {
         croak("The attribute has no name, this is wrong!");
     }
 
-    (void)hv_store_ent((HV*) SvRV(attributes), attr_name, attribute, 0);
+    if (NULL == hv_store_ent((HV*) SvRV(attributes), attr_name, attribute, 0)) {
+        croak("The attribute failed to store, this is wrong!");
+    } 
+
+    MopMaV_set_associated_class(attribute, metaclass);
 }
 
 // methods

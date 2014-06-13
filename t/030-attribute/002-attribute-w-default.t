@@ -25,24 +25,28 @@ sub default_generator { ++$x }
     ok(!mop::internals::MopMaV::has_default_generator($a), '... we do not have a default value');
     is(mop::internals::MopMaV::get_default_generator($a), undef, '... we get undef instead of default value');
 
-    is_refcount(\&default_generator, 2, '... the generator has two reference counts (the glob and the ref here)');
+    my $default_generator = \&default_generator;
 
-    mop::internals::MopMaV::set_default_generator($a, \&default_generator);
+    is_refcount($default_generator, 2, '... the generator has two reference counts (the glob and the ref here)');
 
-    is_refcount(\&default_generator, 3, '... the generator has three reference counts (the glob, the ref here and the attribute)');
+    mop::internals::MopMaV::set_default_generator($a, $default_generator);
+
+    is_refcount($default_generator, 2, '... the generator has three reference counts (the glob, the ref here and the attribute)');
 
     ok(mop::internals::MopMaV::has_default_generator($a), '... we do have a default value now');
-    is(mop::internals::MopMaV::get_default_generator($a), \&default_generator, '... we get the expected default value');
+    is(mop::internals::MopMaV::get_default_generator($a), $default_generator, '... we get the expected default value');
 
     is(mop::internals::MopMaV::get_default_generator($a)->(), 1, '... got the new default value');
     is(mop::internals::MopMaV::get_default_generator($a)->(), 2, '... got the new default value');
 
     mop::internals::MopMaV::clear_default_generator($a);
 
-    is_refcount(\&default_generator, 2, '... the generator has two reference counts (the glob and the ref here)');
+    is_refcount($default_generator, 2, '... the generator has two reference counts (the glob and the ref here)');
 
     ok(!mop::internals::MopMaV::has_default_generator($a), '... we do not have a default value anymore');
     is(mop::internals::MopMaV::get_default_generator($a), undef, '... back to getting undef instead of default value');
 }
 
 done_testing;
+
+

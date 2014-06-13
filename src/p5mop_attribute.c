@@ -60,6 +60,7 @@ void THX_MopMaV_set_default_generator(pTHX_ SV* meta_attr, SV* generator) {
     if (SvTYPE(generator) != SVt_RV || SvTYPE(SvRV(generator)) != SVt_PVCV) {
         croak("generator is not a CODE reference");
     }
+    SvREFCNT_inc(generator);
     MopOV_set_at_slot(meta_attr, ATTR_DEFAULT_SLOT, generator);
 }
 

@@ -27,11 +27,11 @@ sub default_generator { ++$x }
 
     my $default_generator = \&default_generator;
 
-    is_refcount($default_generator, 2, '... the generator has two reference counts (the glob and the ref here)');
+    is(SvREFCNT($default_generator), 2, '... the generator has two reference counts (the glob and the ref here)');
 
     mop::internals::MopMaV::set_default_generator($a, $default_generator);
 
-    is_refcount($default_generator, 2, '... the generator has three reference counts (the glob, the ref here and the attribute)');
+    is(SvREFCNT($default_generator), 2, '... the generator has three reference counts (the glob, the ref here and the attribute)');
 
     ok(mop::internals::MopMaV::has_default_generator($a), '... we do have a default value now');
     is(mop::internals::MopMaV::get_default_generator($a), $default_generator, '... we get the expected default value');
@@ -41,7 +41,7 @@ sub default_generator { ++$x }
 
     mop::internals::MopMaV::clear_default_generator($a);
 
-    is_refcount($default_generator, 2, '... the generator has two reference counts (the glob and the ref here)');
+    is(SvREFCNT($default_generator), 2, '... the generator has two reference counts (the glob and the ref here)');
 
     ok(!mop::internals::MopMaV::has_default_generator($a), '... we do not have a default value anymore');
     is(mop::internals::MopMaV::get_default_generator($a), undef, '... back to getting undef instead of default value');

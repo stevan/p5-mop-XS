@@ -202,6 +202,14 @@ void THX_MopMcV_add_method(pTHX_ SV* metaclass, SV* name, SV* code) {
     }
 
     MopMmV_assign_to_stash(method, method_gv, stash);
+
+    // XXX - FIXME
+    // we likely need to invalidate the method
+    // cache at this point, cause I think it is 
+    // perhaps not being invalidated correctly.
+    // See `make test`.
+    // - SL
+    //   18/7/14
 }
 
 /* *****************************************************

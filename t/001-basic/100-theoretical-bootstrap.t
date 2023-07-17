@@ -11,42 +11,10 @@ BEGIN {
     use_ok('mop')
 };
 
+use lib "t/lib";
+use test::mop::bootstrap;
 
-package test::mop::object 0.01 {
-    our $AUTHORITY = 'cpan:STEVAN';
-
-    # NOTE: simplistic hack for demo
-    sub new {
-        my $class = shift;
-        mop::internals::util::get_meta($class)->construct_instance(\(my $x));
-    }
-}
-
-package test::mop::class 0.01 {
-    our $AUTHORITY = 'cpan:STEVAN';
-    our @ISA       = ('test::mop::object');
-}
-
-my $object = mop::internals::newMopMcV("test::mop::object");
-my $class  = mop::internals::newMopMcV("test::mop::class");
-
-mop::internals::MopMcV::add_method($class, 'add_method' => \&mop::internals::MopMcV::add_method);
-
-bless $class  => 'test::mop::class';
-bless $object => 'test::mop::class';
-
-$class->add_method('name'      => \&mop::internals::MopMcV::name);
-$class->add_method('version'   => \&mop::internals::MopMcV::version);
-$class->add_method('authority' => \&mop::internals::MopMcV::authority);
-
-$class->add_method('has_method' => \&mop::internals::MopMcV::has_method);
-$class->add_method('get_method' => \&mop::internals::MopMcV::get_method);
-
-$class->add_method('has_attribute' => \&mop::internals::MopMcV::has_attribute);
-$class->add_method('get_attribute' => \&mop::internals::MopMcV::get_attribute);
-$class->add_method('add_attribute' => \&mop::internals::MopMcV::add_attribute);
-
-$class->add_method('construct_instance' => \&mop::internals::MopMcV::construct_instance);
+my ($class, $object) = ($test::mop::bootstrap::CLASS, $test::mop::bootstrap::OBJECT);
 
 isa_ok($class, 'test::mop::class');
 isa_ok($class, 'test::mop::object');

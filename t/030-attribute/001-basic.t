@@ -57,8 +57,9 @@ package Foo::Bar 0.01 {}
     my $mcv = mop::internals::newMopMcV("Foo::Bar");
 
     ok(mop::internals::MopMcV::has_attribute($mcv, '$!test'), '... we do have the attribute now');
+    my $sv = mop::internals::MopMcV::get_attribute($mcv, '$!test');
     is(
-        SvREFCNT(mop::internals::MopMcV::get_attribute($mcv, '$!test')), 
+        SvREFCNT($sv),
         1, 
         '... the attribute only has one reference count (the original ref has been destroyed)'
     );

@@ -7,3 +7,4 @@ mop.o
 blib/
 pm_to_blib
 __NOTES__.txt
+.DS_Store
